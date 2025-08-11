@@ -31,7 +31,7 @@ export default function Home() {
         <section className="py-20 md:py-32 bg-accent/10">
           <div className="container mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold font-headline leading-tight">
-              Connecting India's Educators with Opportunities
+              Strength of Faculty
             </h1>
             <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
               The ultimate platform for teachers to find their dream jobs and for institutions to hire qualified faculty.
@@ -50,7 +50,7 @@ export default function Home() {
         {/* Who is it for Section */}
         <section className="py-16 md:py-24">
           <div className="container mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center font-headline">Who is TeacherConnect For?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-center font-headline">Who is Strength of Faculty For?</h2>
             <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <Card className="bg-card">
                 <CardHeader>

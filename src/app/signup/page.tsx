@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Logo } from "@/components/logo";
+import { signInWithGoogle } from "@/lib/firebase";
 
 function GoogleIcon() {
     return (
@@ -19,6 +20,16 @@ function GoogleIcon() {
 }
 
 export default function SignupPage() {
+  const handleGoogleSignUp = async () => {
+    try {
+      await signInWithGoogle();
+      // Handle successful sign-up, e.g., redirect to a dashboard page
+      console.log("Signed up with Google successfully!");
+    } catch (error) {
+      console.error("Error signing up with Google: ", error);
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-accent/10 p-4">
       <div className="w-full max-w-md">
@@ -81,7 +92,7 @@ export default function SignupPage() {
               <Button type="submit" className="w-full">
                 Create Account
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full" type="button" onClick={handleGoogleSignUp}>
                  <GoogleIcon className="mr-2 h-4 w-4" />
                 Sign up with Google
               </Button>

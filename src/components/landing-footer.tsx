@@ -35,7 +35,7 @@ export function LandingFooter() {
           </div>
         </div>
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} TeacherConnect. All rights reserved.
+          © {new Date().getFullYear()} Strength of Faculty. All rights reserved.
         </div>
       </div>
     </footer>

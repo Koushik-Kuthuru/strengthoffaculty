@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/logo"
+import { signInWithGoogle } from "@/lib/firebase";
 
 function GoogleIcon() {
     return (
@@ -16,6 +19,16 @@ function GoogleIcon() {
 }
 
 export default function LoginPage() {
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      // Handle successful sign-in, e.g., redirect to a dashboard page
+      console.log("Signed in with Google successfully!");
+    } catch (error) {
+      console.error("Error signing in with Google: ", error);
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-accent/10 p-4">
         <div className="w-full max-w-md">
@@ -26,7 +39,7 @@ export default function LoginPage() {
                 <CardHeader className="text-center">
                 <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
                 <CardDescription>
-                    Sign in to continue to your TeacherConnect account.
+                    Sign in to continue to your Strength of Faculty account.
                 </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -47,9 +60,9 @@ export default function LoginPage() {
                     <Button type="submit" className="w-full">
                     Sign In
                     </Button>
-                    <Button variant="outline" className="w-full">
-                    <GoogleIcon className="mr-2 h-4 w-4" />
-                    Sign in with Google
+                    <Button variant="outline" className="w-full" type="button" onClick={handleGoogleSignIn}>
+                      <GoogleIcon className="mr-2 h-4 w-4" />
+                      Sign in with Google
                     </Button>
                 </form>
                 <div className="mt-4 text-center text-sm">
