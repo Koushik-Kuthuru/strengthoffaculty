@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Logo } from "@/components/logo";
 import { signInWithGoogle } from "@/lib/firebase";
+import { FirebaseError } from "firebase/app";
 
 function GoogleIcon() {
     return (
@@ -26,6 +27,10 @@ export default function SignupPage() {
       // Handle successful sign-up, e.g., redirect to a dashboard page
       console.log("Signed up with Google successfully!");
     } catch (error) {
+      if (error instanceof FirebaseError && error.code === 'auth/popup-closed-by-user') {
+        console.log("Sign-up popup closed by user.");
+        return;
+      }
       console.error("Error signing up with Google: ", error);
     }
   };

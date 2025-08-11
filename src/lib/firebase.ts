@@ -1,5 +1,5 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import { initializeApp, FirebaseError } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 // Your web app's Firebase configuration
@@ -19,7 +19,16 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
 export const signInWithGoogle = () => {
-  return signInWithPopup(auth, googleProvider);
+  try {
+    return signInWithPopup(auth, googleProvider);
+  } catch (error) {
+    if (error instanceof FirebaseError && (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user')) {
+      // Suppress these specific errors as they are user actions, not application errors.
+      console.log('Popup closed by user.');
+      return Promise.reject(error);
+    }
+    throw error;
+  }
 };
 
-export { auth };
+export { auth, FirebaseError };
