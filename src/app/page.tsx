@@ -1,15 +1,23 @@
+
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { LandingHeader } from "@/components/landing-header";
 import { LandingFooter } from "@/components/landing-footer";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 
 const SubjectButton = ({ subject }: { subject: string }) => (
   <Button variant="outline" className="rounded-full px-6 py-3 text-lg font-semibold text-muted-foreground hover:bg-primary/10 hover:border-primary/50 transition-all duration-300">
     {subject}
   </Button>
 );
+
+const TagButton = ({ tag }: { tag: string }) => (
+    <Button variant="outline" className="rounded-full px-4 py-2 font-semibold text-muted-foreground hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 m-1">
+      {tag}
+    </Button>
+);
+
 
 function GoogleIcon() {
     return (
@@ -80,23 +88,59 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-16 md:py-24 bg-muted/30">
-          <div className="container mx-auto text-center">
-              <h2 className="text-4xl font-thin text-foreground/80 mb-8">
-                Explore Faculty Communities by Subject
-              </h2>
-            <div className="flex flex-wrap gap-4 items-center justify-center">
-                <SubjectButton subject="Math" />
-                <SubjectButton subject="Science" />
-                <SubjectButton subject="English" />
-                <SubjectButton subject="History" />
-                <SubjectButton subject="Computer Science" />
-                <SubjectButton subject="Physical Education" />
-                <Button variant="ghost" className="text-primary hover:bg-primary/10">Show all subjects <ArrowRight className="ml-2 h-4 w-4"/></Button>
+        <section className="py-16 md:py-24">
+            <div className="container mx-auto">
+                <h2 className="text-4xl font-thin text-foreground/80 mb-8">
+                    Find the right faculty or institution for collaboration
+                </h2>
+                <div className="flex flex-wrap items-center">
+                    <TagButton tag="Mathematics" />
+                    <TagButton tag="Science" />
+                    <TagButton tag="Computer Science" />
+                    <TagButton tag="English" />
+                    <TagButton tag="Physical Education" />
+                    <TagButton tag="Arts" />
+                    <TagButton tag="Commerce" />
+                    <TagButton tag="Career Counseling" />
+                    <TagButton tag="Coaching Expert" />
+                    <TagButton tag="Educational Research" />
+                </div>
+                 <Button variant="outline" className="mt-4 rounded-full px-4 py-2">Show more <ChevronDown className="ml-2 h-4 w-4"/></Button>
             </div>
-            <p className="mt-8 text-lg text-muted-foreground">Discover educators, share knowledge, and grow your teaching network.</p>
-          </div>
         </section>
+
+        <section className="py-16 md:py-24 bg-muted/30">
+            <div className="container mx-auto text-center">
+                 <h2 className="text-4xl font-thin text-foreground/80 mb-4">
+                   Institutions: Post your faculty openings or webinars
+                </h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                    Looking to hire quality educators or host a training/webinar?<br/>Post it here for verified faculty across India.
+                </p>
+                <Button>Post an Opportunity</Button>
+            </div>
+        </section>
+
+        <section className="py-16 md:py-24">
+            <div className="container mx-auto">
+                <h2 className="text-4xl font-thin text-foreground/80 mb-8">
+                    Explore Teaching Tools & Resources
+                </h2>
+                <div className="flex flex-wrap items-center">
+                    <TagButton tag="Lesson Planning Tools" />
+                    <TagButton tag="Assessment Software" />
+                    <TagButton tag="EdTech Platforms" />
+                    <TagButton tag="Classroom Management Tools" />
+                    <TagButton tag="Video Lecturing Tools" />
+                    <TagButton tag="Learning Management Systems (LMS)" />
+                    <TagButton tag="NEP 2020 Resources" />
+                    <TagButton tag="AI in Teaching" />
+                    <TagButton tag="Career Growth Courses" />
+                </div>
+                <Button variant="ghost" className="mt-4 text-primary hover:bg-primary/10">Show all <ArrowRight className="ml-2 h-4 w-4"/></Button>
+            </div>
+        </section>
+
 
       </main>
       <LandingFooter />
