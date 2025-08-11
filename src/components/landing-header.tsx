@@ -23,7 +23,7 @@ export function LandingHeader() {
         <div className="flex flex-1 items-center justify-end space-x-2">
           <nav className="hidden items-center gap-6 text-sm md:flex">
               {navLinks.map((link) => (
-                <Link key={link.href} href={link.href} className="flex flex-col items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80">
+                <Link key={link.label} href={link.href} className="flex flex-col items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80">
                   {link.icon}
                   <span>{link.label}</span>
                 </Link>
@@ -50,7 +50,7 @@ export function LandingHeader() {
                   <Logo />
                   <nav className="flex flex-col gap-4">
                   {navLinks.map((link) => (
-                    <Link key={link.href} href={link.href} className="text-foreground/80 transition-colors hover:text-foreground flex items-center gap-2">
+                    <Link key={link.label} href={link.href} className="text-foreground/80 transition-colors hover:text-foreground flex items-center gap-2">
                        {link.icon} {link.label}
                     </Link>
                   ))}
