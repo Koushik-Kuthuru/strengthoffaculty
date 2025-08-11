@@ -8,8 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "./ui/card";
 import { Badge } from "./ui/badge";
-import Image from "next/image";
-import { BookOpen, Building, Briefcase, MapPin, Users, TrendingUp } from "lucide-react";
+import { MapPin } from "lucide-react";
 
 export function TeacherDashboard() {
   const [user, setUser] = useState<User | null>(null);
