@@ -8,24 +8,24 @@ body {
 
 @layer base {
   :root {
-    --background: 222 84% 5%;
-    --foreground: 0 0% 98%;
-    --card: 222 84% 5%;
-    --card-foreground: 0 0% 98%;
-    --popover: 222 84% 5%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 197 71% 73%;
+    --background: 220 100% 95%; /* Light grayish-blue */
+    --foreground: 222 84% 5%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 84% 5%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 84% 5%;
+    --primary: 197 71% 73%; /* Light sky blue */
     --primary-foreground: 222 84% 5%;
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 120 73% 75%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 120 73% 75%; /* Soft green */
     --accent-foreground: 120 25% 15%;
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
     --ring: 197 71% 73%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
@@ -34,6 +34,7 @@ body {
     --chart-5: 340 75% 55%;
     --radius: 0.5rem;
   }
+ 
   .dark {
     --background: 222 84% 5%;
     --foreground: 0 0% 98%;
@@ -61,7 +62,7 @@ body {
     --chart-5: 340 75% 55%;
   }
 }
-
+ 
 @layer base {
   * {
     @apply border-border;
