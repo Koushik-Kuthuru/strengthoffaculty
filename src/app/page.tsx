@@ -239,6 +239,23 @@ export default function Home() {
             </div>
         </section>
 
+        <section className="py-16 md:py-32 bg-background">
+          <div className="container mx-auto text-center">
+            <div className="max-w-4xl mx-auto">
+                <Image
+                  src="https://placehold.co/1200x400.png"
+                  alt="A community of educators and institutions"
+                  width={1200}
+                  height={400}
+                  className="rounded-lg mb-8"
+                  data-ai-hint="diverse people community"
+                />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-thin mb-6">Join your colleagues and friends on Strength of Faculty.</h2>
+            <Button size="lg" className="rounded-full px-12 py-6 text-xl">Get Started</Button>
+          </div>
+        </section>
+
       </main>
       <LandingFooter />
     </div>
