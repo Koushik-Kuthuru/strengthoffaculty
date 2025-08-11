@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { ChevronRight } from "lucide-react";
 
 
 const SubjectButton = ({ subject }: { subject: string }) => (
@@ -23,6 +24,16 @@ const TagButton = ({ tag }: { tag: string }) => (
     <Button variant="outline" className="rounded-full px-4 py-2 font-semibold text-muted-foreground hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 m-1">
       {tag}
     </Button>
+);
+
+const ActionButton = ({ text }: { text: string }) => (
+    <Link
+      href="#"
+      className="flex justify-between items-center p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors duration-200"
+    >
+      <span className="font-semibold text-lg text-foreground/80">{text}</span>
+      <ChevronRight className="h-6 w-6 text-muted-foreground" />
+    </Link>
 );
 
 
@@ -199,6 +210,35 @@ export default function Home() {
                 </div>
             </div>
         </section>
+        
+        <section className="py-16 md:py-24 bg-muted/30">
+            <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div className="flex flex-col gap-4">
+                    <h2 className="text-3xl font-thin text-foreground/80 mb-2">
+                        Who is our faculty for?
+                    </h2>
+                    <p className="text-muted-foreground text-lg">
+                        Anyone seeking transformative learning, mentorship, and real-world impact.
+                    </p>
+                    <div className="flex flex-col gap-3 mt-4">
+                       <ActionButton text="Meet a faculty mentor" />
+                       <ActionButton text="Explore teaching & research" />
+                       <ActionButton text="Join a program guided by experts" />
+                    </div>
+                </div>
+                 <div className="flex items-center justify-center">
+                     <Image
+                      src="https://placehold.co/500x400.png"
+                      alt="Professors and students interacting on campus"
+                      width={500}
+                      height={400}
+                      className="rounded-lg shadow-xl"
+                      data-ai-hint="professors students conversation"
+                    />
+                </div>
+            </div>
+        </section>
+
       </main>
       <LandingFooter />
     </div>
