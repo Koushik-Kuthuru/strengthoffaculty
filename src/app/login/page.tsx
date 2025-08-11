@@ -2,13 +2,15 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/logo"
-import { signInWithGoogle } from "@/lib/firebase";
+import { signInWithGoogle, signInWithEmailPassword } from "@/lib/firebase";
 import { FirebaseError } from "firebase/app";
+import { useToast } from "@/hooks/use-toast";
 
 function GoogleIcon() {
     return (
@@ -22,6 +24,26 @@ function GoogleIcon() {
 
 export default function LoginPage() {
   const router = useRouter();
+  const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleEmailSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await signInWithEmailPassword(email, password);
+      router.push('/dashboard');
+    } catch (error) {
+       console.error("Error signing in with email: ", error);
+       if (error instanceof FirebaseError) {
+         toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error.message,
+        });
+      }
+    }
+  }
 
   const handleGoogleSignIn = async () => {
     try {
@@ -33,6 +55,13 @@ export default function LoginPage() {
         return;
       }
       console.error("Error signing in with Google: ", error);
+       if (error instanceof FirebaseError) {
+         toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error.message,
+        });
+      }
     }
   };
 
@@ -50,10 +79,10 @@ export default function LoginPage() {
                 </CardDescription>
                 </CardHeader>
                 <CardContent>
-                <form className="grid gap-4">
+                <form className="grid gap-4" onSubmit={handleEmailSignIn}>
                     <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="name@example.com" required />
+                    <Input id="email" type="email" placeholder="name@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
                     <div className="grid gap-2">
                     <div className="flex items-center">
@@ -62,7 +91,7 @@ export default function LoginPage() {
                         Forgot your password?
                         </Link>
                     </div>
-                    <Input id="password" type="password" required />
+                    <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
                     </div>
                     <Button type="submit" className="w-full">
                     Sign In

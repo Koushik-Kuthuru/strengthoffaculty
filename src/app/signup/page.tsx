@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Logo } from "@/components/logo";
-import { signInWithGoogle } from "@/lib/firebase";
+import { signInWithGoogle, signUpWithEmailPassword } from "@/lib/firebase";
 import { FirebaseError } from "firebase/app";
+import { useToast } from "@/hooks/use-toast";
 
 function GoogleIcon() {
     return (
@@ -23,6 +25,29 @@ function GoogleIcon() {
 
 export default function SignupPage() {
   const router = useRouter();
+  const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [role, setRole] = useState('teacher');
+
+  const handleEmailSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await signUpWithEmailPassword(email, password);
+      // We can also update the user's profile with the full name here if needed
+      router.push('/dashboard');
+    } catch (error) {
+      console.error("Error signing up with email: ", error);
+       if (error instanceof FirebaseError) {
+         toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error.message,
+        });
+      }
+    }
+  };
 
   const handleGoogleSignUp = async () => {
     try {
@@ -34,6 +59,13 @@ export default function SignupPage() {
         return;
       }
       console.error("Error signing up with Google: ", error);
+       if (error instanceof FirebaseError) {
+         toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error.message,
+        });
+      }
     }
   };
 
@@ -51,10 +83,10 @@ export default function SignupPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="grid gap-4">
+            <form className="grid gap-4" onSubmit={handleEmailSignUp}>
               <div className="grid gap-2">
                 <Label htmlFor="full-name">Full Name</Label>
-                <Input id="full-name" placeholder="Your Name" required />
+                <Input id="full-name" placeholder="Your Name" required value={fullName} onChange={(e) => setFullName(e.target.value)} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
@@ -63,15 +95,17 @@ export default function SignupPage() {
                   type="email"
                   placeholder="name@example.com"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" required />
+                <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
               <div className="grid gap-2">
                 <Label>I am a...</Label>
-                <RadioGroup defaultValue="teacher" className="grid grid-cols-2 gap-4">
+                <RadioGroup value={role} onValueChange={setRole} className="grid grid-cols-2 gap-4">
                   <div>
                     <RadioGroupItem value="teacher" id="teacher" className="peer sr-only" />
                     <Label
