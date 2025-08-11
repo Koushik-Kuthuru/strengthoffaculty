@@ -8,7 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { MapPin } from "lucide-react";
+import { MapPin, Rss, Video, Image as ImageIcon, FileText } from "lucide-react";
+import { Separator } from "./ui/separator";
 
 export function TeacherDashboard() {
   const [user, setUser] = useState<User | null>(null);
@@ -32,113 +33,121 @@ export function TeacherDashboard() {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-8 mt-6">
-      <div className="lg:col-span-1">
-        <Card>
-            <CardHeader className="flex flex-col items-center text-center">
-                 <Avatar className="h-24 w-24 text-3xl mb-2">
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+      <div className="md:col-span-3 lg:col-span-3 space-y-6">
+        <Card className="overflow-hidden">
+            <div className="h-16 bg-muted"></div>
+            <CardHeader className="flex flex-col items-center text-center -mt-12">
+                 <Avatar className="h-24 w-24 text-3xl border-4 border-card">
                     <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || 'User'} />
                     <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
                 </Avatar>
-                <CardTitle className="text-xl">{user?.displayName}</CardTitle>
-                <CardDescription>Math Teacher - Mumbai, India</CardDescription>
+                <CardTitle className="text-xl mt-2">{user?.displayName}</CardTitle>
+                <CardDescription className="text-sm">Math Teacher at St. Martin's Engineering College, Hyderabad</CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col gap-2 text-sm">
-                <Button variant="outline">My Profile</Button>
-                <Button variant="ghost" className="justify-start">My Applications</Button>
-                <Button variant="ghost" className="justify-start">Saved Jobs</Button>
-                <Button variant="ghost" className="justify-start">Followed Institutions</Button>
+            <Separator />
+            <CardContent className="text-sm py-4 space-y-2">
+                <div className="flex justify-between">
+                    <p className="text-muted-foreground">Profile viewers</p>
+                    <p className="font-semibold text-primary">86</p>
+                </div>
+                 <div className="flex justify-between">
+                    <p className="text-muted-foreground">Post impressions</p>
+                    <p className="font-semibold text-primary">93</p>
+                </div>
+            </CardContent>
+        </Card>
+        <Card>
+            <CardHeader><CardTitle className="text-base">Recent</CardTitle></CardHeader>
+             <CardContent className="space-y-2 text-sm text-muted-foreground">
+                <p># Education</p>
+                <p># TeachingJobs</p>
+                <p># India</p>
             </CardContent>
         </Card>
       </div>
 
-      <div className="lg:col-span-2">
-         <div className="space-y-6">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Job Recommendations</CardTitle>
-                    <CardDescription>Based on your profile and preferences.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                        <div className="flex items-start gap-4">
-                            <Avatar className="mt-1">
-                                <AvatarImage src="https://placehold.co/40x40.png" alt="school logo" data-ai-hint="school logo"/>
-                                <AvatarFallback>VIS</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                                <p className="font-semibold">Physics Teacher</p>
-                                <p className="text-sm text-muted-foreground">Vidya International School</p>
-                                <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1"><MapPin className="h-3 w-3" /> Mumbai, India</p>
-                            </div>
-                            <Button>Apply Now</Button>
-                        </div>
-                         <div className="flex items-start gap-4">
-                            <Avatar className="mt-1">
-                                <AvatarImage src="https://placehold.co/40x40.png" alt="school logo" data-ai-hint="school building" />
-                                <AvatarFallback>DPS</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                                <p className="font-semibold">Chemistry Teacher</p>
-                                <p className="text-sm text-muted-foreground">Delhi Public School</p>
-                                <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1"><MapPin className="h-3 w-3" /> Delhi, India</p>
-                            </div>
-                            <Button>Apply Now</Button>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Activity Feed</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-start gap-4">
-                      <Avatar>
-                         <AvatarImage src="https://placehold.co/40x40.png" alt="Institution logo" data-ai-hint="school logo"/>
-                        <AvatarFallback>VI</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                         <div className="flex justify-between items-center">
-                           <p className="font-semibold">Vidya International School</p>
-                            <p className="text-xs text-muted-foreground">1d ago</p>
-                        </div>
-                        <p className="mt-1 text-sm">We're hiring a new Physics teacher for our Mumbai campus! Apply now. #Hiring #Jobs</p>
-                        <Badge variant="secondary" className="mt-2">New Job Posting</Badge>
-                      </div>
-                    </div>
-                </CardContent>
-            </Card>
+      <div className="md:col-span-6 lg:col-span-6 space-y-6">
+        <Card>
+            <CardContent className="p-4">
+                <div className="flex items-center gap-4">
+                    <Avatar>
+                        <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || 'User'} />
+                        <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
+                    </Avatar>
+                    <Button variant="outline" className="flex-1 justify-start rounded-full text-muted-foreground">Start a post</Button>
+                </div>
+                <div className="flex justify-around mt-4">
+                    <Button variant="ghost" size="sm"><Video className="text-blue-500" /> Video</Button>
+                    <Button variant="ghost" size="sm"><ImageIcon className="text-green-500"/> Photo</Button>
+                    <Button variant="ghost" size="sm"><FileText className="text-yellow-500"/> Article</Button>
+                </div>
+            </CardContent>
+        </Card>
+        <div className="flex items-center gap-2">
+            <Separator className="flex-1"/>
+            <span className="text-xs text-muted-foreground">Sort by: Top</span>
         </div>
+        <Card>
+            <CardHeader>
+                <div className="flex items-start gap-4">
+                  <Avatar>
+                     <AvatarImage src="https://placehold.co/40x40.png" alt="Institution logo" data-ai-hint="school logo"/>
+                    <AvatarFallback>VI</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                     <p className="font-semibold">Vidya International School</p>
+                     <p className="text-xs text-muted-foreground">1d ago</p>
+                  </div>
+                </div>
+            </CardHeader>
+            <CardContent>
+                <p className="text-sm mb-4">We're hiring a new Physics teacher for our Mumbai campus! Apply now. #Hiring #Jobs</p>
+                <img src="https://placehold.co/600x300.png" alt="Job post" className="rounded-lg" data-ai-hint="classroom teaching"/>
+            </CardContent>
+        </Card>
       </div>
 
-      <div className="hidden lg:block lg:col-span-1">
-        <div className="space-y-6">
-            <Card>
-                <CardHeader><CardTitle>Suggested Institutions</CardTitle></CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="flex items-center gap-4">
-                        <Avatar>
-                            <AvatarImage src="https://placehold.co/40x40.png" alt="school logo" data-ai-hint="school building" />
-                            <AvatarFallback>IS</AvatarFallback>
-                        </Avatar>
-                        <div>
-                            <p className="font-semibold">International School</p>
-                            <p className="text-sm text-muted-foreground">Education</p>
-                        </div>
-                        <Button variant="outline" size="sm" className="ml-auto">Follow</Button>
+      <div className="md:col-span-3 lg:col-span-3 space-y-6">
+        <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-base">Faculty News</CardTitle>
+                <Rss className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div className="flex items-start gap-2">
+                    <div className="font-semibold text-sm">▸</div>
+                    <div>
+                        <p className="font-semibold text-sm">Delhi opens its doors to Tesla</p>
+                        <p className="text-xs text-muted-foreground">40m ago • 16,931 readers</p>
                     </div>
-                </CardContent>
-            </Card>
-             <Card>
-                <CardHeader><CardTitle>Trending Resources</CardTitle></CardHeader>
-                <CardContent className="space-y-2">
-                   <p className="text-sm font-medium hover:underline cursor-pointer">New classroom management techniques</p>
-                   <p className="text-sm font-medium hover:underline cursor-pointer">Guide to online teaching tools</p>
-                </CardContent>
-            </Card>
-        </div>
+                </div>
+                <div className="flex items-start gap-2">
+                    <div className="font-semibold text-sm">▸</div>
+                    <div>
+                        <p className="font-semibold text-sm">RBI keeps repo rate unchanged</p>
+                        <p className="text-xs text-muted-foreground">6h ago • 3,425 readers</p>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+         <Card>
+            <CardHeader>
+                <CardTitle className="text-base">Suggested Institutions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div className="flex items-center gap-4">
+                    <Avatar>
+                        <AvatarImage src="https://placehold.co/40x40.png" alt="school logo" data-ai-hint="school building" />
+                        <AvatarFallback>IS</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <p className="font-semibold text-sm">International School</p>
+                        <Button variant="outline" size="sm" className="mt-1 h-8 rounded-full">Follow</Button>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
       </div>
     </div>
   );

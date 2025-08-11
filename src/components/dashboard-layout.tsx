@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Home, Briefcase, MessageSquare, Bell, Menu, Search } from 'lucide-react';
+import { Home, Briefcase, MessageSquare, Bell, Menu, Search, Users, GraduationCap } from 'lucide-react';
 import { Logo } from './logo';
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -49,7 +49,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center">
+      <div className="flex h-screen w-screen items-center justify-center bg-background">
         <Logo />
       </div>
     );
@@ -60,86 +60,122 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <div className="hidden border-r bg-muted/40 md:block">
-        <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-              <Logo />
-            </Link>
-          </div>
-          <div className="flex-1">
-           {/* Sidebar content will go here in future steps */}
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-col">
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="shrink-0 md:hidden"
-              >
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle navigation menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="flex flex-col">
-             {/* Mobile sidebar content will go here */}
-            </SheetContent>
-          </Sheet>
-          <div className="w-full flex-1">
-            <form>
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search jobs, institutions..."
-                  className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
-                />
-              </div>
-            </form>
-          </div>
-           <nav className="hidden md:flex items-center space-x-4 lg:space-x-6">
-              <Link href="/dashboard" className="text-sm font-medium transition-colors hover:text-primary">
-                <Home className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
-                <Briefcase className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
-                <MessageSquare className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
-                <Bell className="h-5 w-5" />
-              </Link>
-            </nav>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
-                  <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
-                </Avatar>
-                <span className="sr-only">Toggle user menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleSignOut}>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+    <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-50 w-full border-b bg-card">
+            <div className="container flex h-16 items-center">
+                <div className="mr-4 flex items-center">
+                    <Link href="/dashboard" className="mr-2">
+                        <GraduationCap className="h-8 w-8 text-primary" />
+                    </Link>
+                    <div className="relative">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                        type="search"
+                        placeholder="Search"
+                        className="w-full appearance-none bg-background pl-8 shadow-none md:w-[280px] lg:w-[320px]"
+                        />
+                    </div>
+                </div>
+
+                <nav className="flex-1 justify-center hidden md:flex">
+                    <div className="flex items-center space-x-6 lg:space-x-8">
+                        <Link href="/dashboard" className="flex flex-col items-center text-sm font-medium transition-colors hover:text-primary">
+                            <Home className="h-6 w-6" />
+                            <span>Home</span>
+                        </Link>
+                        <Link href="#" className="flex flex-col items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+                            <Users className="h-6 w-6" />
+                            <span>My Network</span>
+                        </Link>
+                        <Link href="#" className="flex flex-col items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+                            <Briefcase className="h-6 w-6" />
+                             <span>Jobs</span>
+                        </Link>
+                        <Link href="#" className="flex flex-col items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+                            <MessageSquare className="h-6 w-6" />
+                            <span>Messaging</span>
+                        </Link>
+                        <Link href="#" className="flex flex-col items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+                            <Bell className="h-6 w-6" />
+                            <span>Notifications</span>
+                        </Link>
+                         <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                               <button className="flex flex-col items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+                                 <Avatar className="h-6 w-6">
+                                    <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+                                    <AvatarFallback className="text-xs">{getInitials(user.displayName)}</AvatarFallback>
+                                </Avatar>
+                                <span>Me</span>
+                               </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56">
+                                <DropdownMenuLabel>
+                                    <div className="flex items-center gap-2">
+                                         <Avatar className="h-8 w-8">
+                                            <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+                                            <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <p className="font-semibold">{user.displayName}</p>
+                                            <p className="text-xs text-muted-foreground font-normal">Teacher</p>
+                                        </div>
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>Profile</DropdownMenuItem>
+                                <DropdownMenuItem>Settings</DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={handleSignOut}>Logout</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                </nav>
+                <div className="flex items-center space-x-2 md:hidden">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <Avatar className="h-8 w-8">
+                                <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+                                <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+                                </Avatar>
+                                <span className="sr-only">Toggle user menu</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Profile</DropdownMenuItem>
+                            <DropdownMenuItem>Settings</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={handleSignOut}>Logout</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            </div>
         </header>
-        <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8 bg-muted/40">
+        <main className="container py-8">
             {children}
         </main>
-      </div>
+         <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t z-50">
+            <nav className="flex justify-around py-2">
+                 <Link href="/dashboard" className="flex flex-col items-center text-sm font-medium transition-colors hover:text-primary">
+                    <Home className="h-6 w-6" />
+                </Link>
+                <Link href="#" className="flex flex-col items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+                    <Users className="h-6 w-6" />
+                </Link>
+                <Link href="#" className="flex flex-col items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+                    <Briefcase className="h-6 w-6" />
+                </Link>
+                <Link href="#" className="flex flex-col items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+                    <MessageSquare className="h-6 w-6" />
+                </Link>
+                <Link href="#" className="flex flex-col items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+                    <Bell className="h-6 w-6" />
+                </Link>
+            </nav>
+        </footer>
     </div>
   )
 }
