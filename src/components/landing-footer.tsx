@@ -1,18 +1,14 @@
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
-import { GraduationCap } from 'lucide-react';
 
 export function LandingFooter() {
   return (
-    <footer className="border-t bg-accent/10">
+    <footer className="border-t bg-muted/30">
       <div className="container py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="flex flex-col gap-4">
-             <div className="flex items-center justify-start gap-2" aria-label="Strength of Faculty home">
-                <GraduationCap className="h-8 w-8 text-primary" />
-                <span className="text-2xl font-bold font-headline text-foreground">Strength of Faculty</span>
-            </div>
-            <p className="text-sm text-muted-foreground">Connecting India's educators with opportunities.</p>
+             <Logo />
+            <p className="text-sm text-muted-foreground">India’s Faculty, One Network.</p>
           </div>
           <div>
             <h3 className="mb-4 font-headline font-semibold">Platform</h3>

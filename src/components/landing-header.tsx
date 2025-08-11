@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
-import { Menu, Briefcase, Users, Rss, GraduationCap } from 'lucide-react';
+import { Menu, Briefcase, Users, Rss } from 'lucide-react';
 
 export function LandingHeader() {
   const navLinks = [
@@ -16,9 +16,7 @@ export function LandingHeader() {
       <div className="container flex h-16 max-w-screen-2xl items-center">
         <div className="mr-4 flex items-center">
           <Link href="/" className="mr-6">
-             <div className="flex items-center justify-center gap-2" aria-label="Strength of Faculty home">
-              <GraduationCap className="h-8 w-8 text-primary" />
-            </div>
+             <Logo />
           </Link>
         </div>
 
@@ -36,7 +34,7 @@ export function LandingHeader() {
               <Link href="/signup" className="text-lg">Join now</Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/login" className="text-lg px-6 py-3 rounded-full">Sign In</Link>
+              <Link href="/login" className="text-lg px-6 py-3 rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">Sign In</Link>
             </Button>
           </div>
           <div className="md:hidden">
