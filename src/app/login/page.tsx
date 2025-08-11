@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link"
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -20,11 +21,12 @@ function GoogleIcon() {
 }
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
-      // Handle successful sign-in, e.g., redirect to a dashboard page
-      console.log("Signed in with Google successfully!");
+      router.push('/dashboard');
     } catch (error) {
       if (error instanceof FirebaseError && (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request')) {
         console.log("Sign-in popup closed by user.");
