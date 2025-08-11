@@ -27,7 +27,7 @@ export default function SignupPage() {
       // Handle successful sign-up, e.g., redirect to a dashboard page
       console.log("Signed up with Google successfully!");
     } catch (error) {
-      if (error instanceof FirebaseError && error.code === 'auth/popup-closed-by-user') {
+      if (error instanceof FirebaseError && (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request')) {
         console.log("Sign-up popup closed by user.");
         return;
       }

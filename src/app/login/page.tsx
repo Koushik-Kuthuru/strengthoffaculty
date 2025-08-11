@@ -26,7 +26,7 @@ export default function LoginPage() {
       // Handle successful sign-in, e.g., redirect to a dashboard page
       console.log("Signed in with Google successfully!");
     } catch (error) {
-      if (error instanceof FirebaseError && error.code === 'auth/popup-closed-by-user') {
+      if (error instanceof FirebaseError && (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request')) {
         console.log("Sign-in popup closed by user.");
         return;
       }

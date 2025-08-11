@@ -19,16 +19,7 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
 export const signInWithGoogle = () => {
-  try {
-    return signInWithPopup(auth, googleProvider);
-  } catch (error) {
-    if (error instanceof FirebaseError && (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user')) {
-      // Suppress these specific errors as they are user actions, not application errors.
-      console.log('Popup closed by user.');
-      return Promise.reject(error);
-    }
-    throw error;
-  }
+  return signInWithPopup(auth, googleProvider);
 };
 
 export { auth, FirebaseError };
