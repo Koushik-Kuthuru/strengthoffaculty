@@ -4,7 +4,14 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { LandingHeader } from "@/components/landing-header";
 import { LandingFooter } from "@/components/landing-footer";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 
 const SubjectButton = ({ subject }: { subject: string }) => (
   <Button variant="outline" className="rounded-full px-6 py-3 text-lg font-semibold text-muted-foreground hover:bg-primary/10 hover:border-primary/50 transition-all duration-300">
@@ -84,6 +91,55 @@ export default function Home() {
                     find your <span className="font-bold">faculty strength</span>
                     <p className="text-lg font-normal mt-2">Connect with top educators across India</p>
                  </h2>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-24 bg-muted/30">
+          <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div className="flex flex-col items-center text-center">
+              <Image
+                src="https://placehold.co/300x200.png"
+                width={300}
+                height={200}
+                alt="Connect with Faculty"
+                className="mb-6 rounded-lg"
+                data-ai-hint="collaboration meeting"
+              />
+              <h3 className="text-2xl font-semibold mb-2">Connect with Faculty Who Inspire</h3>
+              <p className="text-muted-foreground mb-4 max-w-sm">
+                Build meaningful academic connections with faculty who lead in teaching, research, and mentorship.
+              </p>
+              <Button variant="outline" className="rounded-full">Browse Faculty Directory</Button>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <Image
+                src="https://placehold.co/300x200.png"
+                width={300}
+                height={200}
+                alt="Learn from Educators"
+                className="mb-6 rounded-lg"
+                data-ai-hint="learning online"
+              />
+              <h3 className="text-2xl font-semibold mb-2">Learn From World-Class Educators</h3>
+              <p className="text-muted-foreground mb-4 max-w-sm">
+                Choose your area of interest and explore the faculty guiding students toward success.
+              </p>
+              <div className="w-full max-w-xs">
+                <Select>
+                  <SelectTrigger className="rounded-full">
+                    <SelectValue placeholder="Select a discipline to explore" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="engineering">Engineering</SelectItem>
+                    <SelectItem value="humanities">Humanities</SelectItem>
+                    <SelectItem value="sciences">Sciences</SelectItem>
+                    <SelectItem value="business">Business</SelectItem>
+                    <SelectItem value="design">Design</SelectItem>
+                    <SelectItem value="interdisciplinary">Interdisciplinary Programs</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         </section>
