@@ -8,12 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Logo } from "@/components/logo";
+import { auth } from "@/lib/firebase";
 
 export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const auth = getAuth();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -26,7 +26,7 @@ export default function DashboardPage() {
     });
 
     return () => unsubscribe();
-  }, [auth, router]);
+  }, [router]);
 
   const handleSignOut = () => {
     auth.signOut().then(() => {
