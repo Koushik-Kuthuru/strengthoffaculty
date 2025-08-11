@@ -88,60 +88,61 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-16 md:py-24">
-            <div className="container mx-auto">
-                <h2 className="text-4xl font-thin text-foreground/80 mb-8">
-                    Find the right faculty or institution for collaboration
-                </h2>
-                <div className="flex flex-wrap items-center">
-                    <TagButton tag="Mathematics" />
-                    <TagButton tag="Science" />
-                    <TagButton tag="Computer Science" />
-                    <TagButton tag="English" />
-                    <TagButton tag="Physical Education" />
-                    <TagButton tag="Arts" />
-                    <TagButton tag="Commerce" />
-                    <TagButton tag="Career Counseling" />
-                    <TagButton tag="Coaching Expert" />
-                    <TagButton tag="Educational Research" />
-                </div>
-                 <Button variant="outline" className="mt-4 rounded-full px-4 py-2">Show more <ChevronDown className="ml-2 h-4 w-4"/></Button>
-            </div>
-        </section>
-
         <section className="py-16 md:py-24 bg-muted/30">
-            <div className="container mx-auto text-center">
-                 <h2 className="text-4xl font-thin text-foreground/80 mb-4">
-                   Institutions: Post your faculty openings or webinars
-                </h2>
-                <p className="text-lg text-muted-foreground mb-8">
-                    Looking to hire quality educators or host a training/webinar?<br/>Post it here for verified faculty across India.
-                </p>
-                <Button>Post an Opportunity</Button>
+            <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 className="text-3xl font-thin text-foreground/80 mb-2">
+                       Sharpen your teaching skills with quick activities
+                    </h2>
+                     <h3 className="text-xl text-muted-foreground mb-4 font-light">Enhance your expertise with daily micro-learning</h3>
+                    <p className="text-muted-foreground mb-6">
+                        Take a short break to explore subject quizzes, pedagogy tips, or NEP 2020 nuggets curated for teachers.
+                    </p>
+                     <div className="flex flex-wrap items-center">
+                        <TagButton tag="QuizTime" />
+                        <TagButton tag="PedagoTips" />
+                        <TagButton tag="PolicyPulse" />
+                        <TagButton tag="Did You Know?" />
+                        <TagButton tag="EduPuzzle" />
+                    </div>
+                </div>
+                 <div className="flex items-center justify-center">
+                     <Image
+                      src="https://placehold.co/500x300.png"
+                      alt="Brain teasers and quizzes"
+                      width={500}
+                      height={300}
+                      className="rounded-lg shadow-xl"
+                      data-ai-hint="quiz puzzle"
+                    />
+                </div>
             </div>
         </section>
 
         <section className="py-16 md:py-24">
-            <div className="container mx-auto">
-                <h2 className="text-4xl font-thin text-foreground/80 mb-8">
-                    Explore Teaching Tools & Resources
-                </h2>
-                <div className="flex flex-wrap items-center">
-                    <TagButton tag="Lesson Planning Tools" />
-                    <TagButton tag="Assessment Software" />
-                    <TagButton tag="EdTech Platforms" />
-                    <TagButton tag="Classroom Management Tools" />
-                    <TagButton tag="Video Lecturing Tools" />
-                    <TagButton tag="Learning Management Systems (LMS)" />
-                    <TagButton tag="NEP 2020 Resources" />
-                    <TagButton tag="AI in Teaching" />
-                    <TagButton tag="Career Growth Courses" />
+             <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                 <div className="flex items-center justify-center">
+                     <Image
+                      src="https://placehold.co/500x400.png"
+                      alt="Teacher profile on a mobile device"
+                      width={500}
+                      height={400}
+                      className="rounded-lg shadow-xl"
+                      data-ai-hint="teacher profile mobile"
+                    />
                 </div>
-                <Button variant="ghost" className="mt-4 text-primary hover:bg-primary/10">Show all <ArrowRight className="ml-2 h-4 w-4"/></Button>
+                <div>
+                    <h2 className="text-3xl font-thin text-foreground/80 mb-2">
+                       Let schools and colleges know you're open to teach or mentor
+                    </h2>
+                     <h3 className="text-xl text-muted-foreground mb-4 font-light">Let the right institutions know you’re open to teach or mentor</h3>
+                    <p className="text-muted-foreground mb-6">
+                        With the Open to Teach feature, educators can show availability for full-time, part-time, online classes, or mentoring.
+                    </p>
+                    <Button>Get Started</Button>
+                </div>
             </div>
         </section>
-
-
       </main>
       <LandingFooter />
     </div>
