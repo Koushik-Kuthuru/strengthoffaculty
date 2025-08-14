@@ -66,7 +66,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-muted/30">
-        <header className="sticky top-0 z-50 w-full border-b bg-card">
+        <header className="w-full border-b bg-card">
             <div className="container flex h-16 items-center">
                 <div className="mr-4 flex items-center">
                     <Link href="/dashboard" className="mr-2">
@@ -206,7 +206,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <main className="container py-8">
             {children}
         </main>
-         <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t z-50">
+         <footer className="md:hidden bg-card border-t">
             <nav className="flex justify-around py-2">
                  <Link href="/dashboard" className="flex flex-col items-center text-sm font-medium transition-colors hover:text-primary">
                     <Home className="h-6 w-6" />
