@@ -187,9 +187,9 @@ export default function SignupPage() {
                     onClick={() => setShowPassword((prev) => !prev)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
+                      <EyeOff className="h-4 w-4 transition-all duration-300" />
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <Eye className="h-4 w-4 transition-all duration-300" />
                     )}
                     <span className="sr-only">
                       {showPassword ? "Hide password" : "Show password"}
@@ -221,9 +221,9 @@ export default function SignupPage() {
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
+                      <EyeOff className="h-4 w-4 transition-all duration-300" />
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <Eye className="h-4 w-4 transition-all duration-300" />
                     )}
                      <span className="sr-only">
                       {showConfirmPassword ? "Hide password" : "Show password"}

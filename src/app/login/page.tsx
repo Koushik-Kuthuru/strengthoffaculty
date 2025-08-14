@@ -106,9 +106,9 @@ export default function LoginPage() {
                           onClick={() => setShowPassword((prev) => !prev)}
                         >
                           {showPassword ? (
-                            <EyeOff className="h-4 w-4" />
+                            <EyeOff className="h-4 w-4 transition-all duration-300" />
                           ) : (
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-4 w-4 transition-all duration-300" />
                           )}
                            <span className="sr-only">
                             {showPassword ? "Hide password" : "Show password"}
