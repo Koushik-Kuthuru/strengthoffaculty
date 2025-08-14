@@ -94,10 +94,14 @@ const LoginForm = ({ onSignupClick, onForgotPasswordClick, onModalClose }: { onS
     } catch (error) {
        console.error("Error signing in with email: ", error);
        if (error instanceof FirebaseError) {
+         let description = "An unexpected error occurred. Please try again.";
+         if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+            description = "Invalid email or password. Please try again.";
+         }
          toast({
           variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: error.message,
+          title: "Login Failed",
+          description: description,
         });
       }
     }
