@@ -302,15 +302,13 @@ const SignupForm = ({ onLoginClick, onModalClose }: { onLoginClick: () => void, 
       </DialogHeader>
       <div className="px-6 pb-6 max-h-[80vh] overflow-y-auto">
         <form className="grid gap-4" onSubmit={handleEmailSignUp}>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="first-name">First Name</Label>
-              <Input id="first-name" placeholder="John" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="last-name">Last Name</Label>
-              <Input id="last-name" placeholder="Doe" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
-            </div>
+          <div className="grid gap-2">
+            <Label htmlFor="first-name">First Name</Label>
+            <Input id="first-name" placeholder="John" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="last-name">Last Name</Label>
+            <Input id="last-name" placeholder="Doe" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="email-signup">Email</Label>
