@@ -4,12 +4,13 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPas
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  projectId: "teacherconnect-dn75g",
-  appId: "1:707784422970:web:c8eafe935520068f4fe703",
-  storageBucket: "teacherconnect-dn75g.firebasestorage.app",
-  apiKey: "AIzaSyCYvyO91hJY-gBlaLo1aZ4FlBc7GIEGEuI",
-  authDomain: "teacherconnect-dn75g.firebaseapp.com",
-  messagingSenderId: "707784422970",
+  "projectId": "teacherconnect-dn75g",
+  "appId": "1:707784422970:web:c8eafe935520068f4fe703",
+  "storageBucket": "teacherconnect-dn75g.firebasestorage.app",
+  "apiKey": "AIzaSyCYvyO91hJY-gBlaLo1aZ4FlBc7GIEGEuI",
+  "authDomain": "teacherconnect-dn75g.firebaseapp.com",
+  "measurementId": "",
+  "messagingSenderId": "707784422970"
 };
 
 // Initialize Firebase
