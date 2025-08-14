@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, FirebaseError } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, User } from "firebase/auth";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -36,18 +36,15 @@ export const sendPasswordReset = (email: string) => {
   return sendPasswordResetEmail(auth, email);
 };
 
-export const updateUserProfile = async (data: any) => {
-  const user = auth.currentUser;
-  if (user) {
-    const userRef = doc(db, "users", user.uid);
-    // Use setDoc with merge: true to create or update the document
-    await setDoc(userRef, data, { merge: true });
-  } else {
-    throw new Error("No user is signed in.");
-  }
+
+export const updateUserProfile = async (userId: string, data: any) => {
+  if (!userId) throw new Error("User ID is required to update profile.");
+  const userRef = doc(db, "users", userId);
+  await setDoc(userRef, data, { merge: true });
 };
 
 export const getUserProfile = async (userId: string) => {
+  if (!userId) return null;
   const userRef = doc(db, "users", userId);
   const docSnap = await getDoc(userRef);
   if (docSnap.exists()) {
@@ -56,6 +53,7 @@ export const getUserProfile = async (userId: string) => {
     return null;
   }
 };
+
 
 export const setUserRole = async (userId: string, role: string) => {
   const userRef = doc(db, 'users', userId);
@@ -67,8 +65,10 @@ export const getUserRole = async (userId: string): Promise<string | null> => {
     return profile?.role || null;
 };
 
-export const onAuthStateChange = (callback: any) => {
+export const onAuthStateChange = (callback: (user: User | null) => void) => {
   return onAuthStateChanged(auth, callback);
 }
 
-export { auth, FirebaseError };
+export { auth, db, FirebaseError };
+
+    
