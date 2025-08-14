@@ -177,7 +177,6 @@ export default function TeacherProfilePage() {
       const profileToSave = {
         ...data,
         profileCompleted: true,
-        role: 'teacher'
       };
       
       await updateUserProfile(user.uid, profileToSave);

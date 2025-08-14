@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, FirebaseError } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, User } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -36,11 +36,12 @@ export const sendPasswordReset = (email: string) => {
   return sendPasswordResetEmail(auth, email);
 };
 
-
 export const updateUserProfile = async (userId: string, data: any) => {
   if (!userId) throw new Error("User ID is required to update profile.");
   const userRef = doc(db, "users", userId);
-  await setDoc(userRef, data, { merge: true });
+  // Ensure the role is always set to teacher when the profile is updated.
+  const profileData = { ...data, role: 'teacher' };
+  await setDoc(userRef, profileData, { merge: true });
 };
 
 export const getUserProfile = async (userId: string) => {
@@ -50,15 +51,11 @@ export const getUserProfile = async (userId: string) => {
   if (docSnap.exists()) {
     return docSnap.data();
   } else {
-    // Return a base object so the app knows a profile needs to be created.
-    return {};
+    // If the profile doesn't exist, create a basic one with the teacher role.
+    const basicProfile = { role: 'teacher', profileCompleted: false };
+    await setDoc(userRef, basicProfile);
+    return basicProfile;
   }
-};
-
-
-export const setUserRole = async (userId: string, role: string) => {
-  const userRef = doc(db, 'users', userId);
-  await setDoc(userRef, { role }, { merge: true });
 };
 
 export const onAuthStateChange = (callback: (user: User | null) => void) => {

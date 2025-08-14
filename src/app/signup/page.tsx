@@ -149,7 +149,7 @@ export default function SignupPage() {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
             <CardDescription>
-              Join our network of educators and institutions today.
+              Join our network of educators today.
             </CardDescription>
           </CardHeader>
           <CardContent>

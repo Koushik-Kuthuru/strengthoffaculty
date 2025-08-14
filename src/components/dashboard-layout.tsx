@@ -11,8 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Home, Briefcase, MessageSquare, Bell, Menu, Search, Users, GraduationCap, Moon, Sun, PlusCircle } from 'lucide-react';
+import { Home, Briefcase, MessageSquare, Bell, Search, Users, Moon, Sun } from 'lucide-react';
 import { Logo } from './logo';
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -61,9 +60,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  // A simple way to toggle role for now
-  const isInstitution = true; 
-  const profileUrl = isInstitution ? '/onboarding/institution' : '/onboarding/teacher';
+  const profileUrl = '/onboarding/teacher/profile';
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -124,7 +121,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                                         </Avatar>
                                         <div>
                                             <p className="font-semibold">{user.displayName}</p>
-                                            <p className="text-xs text-muted-foreground font-normal">{isInstitution ? 'Institution' : 'Teacher'}</p>
+                                            <p className="text-xs text-muted-foreground font-normal">Teacher</p>
                                         </div>
                                     </div>
                                 </DropdownMenuLabel>
@@ -157,12 +154,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        {isInstitution && (
-                          <Button variant="secondary" size="sm">
-                            <PlusCircle className="mr-2 h-4 w-4" />
-                            Post a Job
-                          </Button>
-                        )}
                     </div>
                 </nav>
                 <div className="flex items-center space-x-2 md:hidden">

@@ -16,7 +16,6 @@ import {
 import { ChevronRight } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/logo";
@@ -26,13 +25,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle, XCircle, Eye, EyeOff } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-
-
-const SubjectButton = ({ subject }: { subject: string }) => (
-  <Button variant="outline" className="rounded-full px-6 py-3 text-lg font-semibold text-muted-foreground hover:bg-primary/10 hover:border-primary/50 transition-all duration-300">
-    {subject}
-  </Button>
-);
 
 const TagButton = ({ tag }: { tag: string }) => (
     <Button variant="outline" className="rounded-full px-4 py-2 font-semibold text-muted-foreground hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 m-1">
@@ -289,7 +281,7 @@ const SignupForm = ({ onLoginClick, onModalClose }: { onLoginClick: () => void, 
       <DialogHeader>
         <DialogTitle className="text-2xl font-headline text-center">Create an Account</DialogTitle>
         <DialogDescription className="text-center">
-          Join our network of educators and institutions today.
+          Join our network of educators today.
         </DialogDescription>
       </DialogHeader>
       <div className="px-6 pb-6 max-h-[80vh] overflow-y-auto">

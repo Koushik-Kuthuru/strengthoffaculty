@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { onAuthStateChange, getUserProfile } from '@/lib/firebase';
 import { User } from 'firebase/auth';
 import { DashboardLayout } from "@/components/dashboard-layout";
-import { InstitutionDashboard } from "@/components/institution-dashboard";
 import { TeacherDashboard } from "@/components/teacher-dashboard";
 import { Skeleton } from '@/components/ui/skeleton';
 import { Logo } from '@/components/logo';
@@ -15,7 +14,6 @@ import { Logo } from '@/components/logo';
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,20 +22,11 @@ export default function DashboardPage() {
         setUser(currentUser);
         const profile = await getUserProfile(currentUser.uid);
         
-        if (profile) {
-            if (!profile.role) {
-                router.push('/onboarding/role');
-            } else if (!profile.profileCompleted) {
-                router.push(`/onboarding/${profile.role}/profile`);
-            } else {
-                setUserRole(profile.role);
-                setLoading(false);
-            }
+        if (profile && !profile.profileCompleted) {
+            router.push('/onboarding/teacher/profile');
         } else {
-            // New user, profile doesn't exist yet
-            router.push('/onboarding/role');
+            setLoading(false);
         }
-
       } else {
         router.push('/login');
       }
@@ -47,7 +36,7 @@ export default function DashboardPage() {
   }, [router]);
 
 
-  if (loading || !userRole) {
+  if (loading) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
@@ -60,7 +49,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      {userRole === 'teacher' ? <TeacherDashboard /> : <InstitutionDashboard />}
+      <TeacherDashboard />
     </DashboardLayout>
   );
 }
