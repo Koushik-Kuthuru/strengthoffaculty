@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -27,10 +28,19 @@ export default function SignupPage() {
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Passwords do not match.",
+        description: "Please ensure your passwords match before proceeding."
+      });
+      return;
+    }
     try {
       await signUpWithEmailPassword(email, password);
       // We can also update the user's profile with the full name here if needed
@@ -100,6 +110,10 @@ export default function SignupPage() {
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+              </div>
+               <div className="grid gap-2">
+                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Input id="confirm-password" type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
               </div>
               <Button type="submit" className="w-full">
                 Create Account
