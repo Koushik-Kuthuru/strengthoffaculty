@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Logo } from "@/components/logo";
 import { signInWithGoogle, signUpWithEmailPassword } from "@/lib/firebase";
 import { FirebaseError } from "firebase/app";
@@ -29,7 +28,6 @@ export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [role, setRole] = useState('teacher');
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,33 +100,6 @@ export default function SignupPage() {
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-              </div>
-              <div className="grid gap-2">
-                <Label>I am a...</Label>
-                <RadioGroup value={role} onValueChange={setRole} className="grid grid-cols-2 gap-4">
-                  <div>
-                    <RadioGroupItem value="teacher" id="teacher" className="peer sr-only" />
-                    <Label
-                      htmlFor="teacher"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                    >
-                      Teacher
-                    </Label>
-                  </div>
-                  <div>
-                    <RadioGroupItem
-                      value="institution"
-                      id="institution"
-                      className="peer sr-only"
-                    />
-                    <Label
-                      htmlFor="institution"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                    >
-                      Institution
-                    </Label>
-                  </div>
-                </RadioGroup>
               </div>
               <Button type="submit" className="w-full">
                 Create Account
