@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, useFieldArray, useWatch } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
@@ -185,6 +185,7 @@ export default function TeacherProfilePage() {
       reset(profileToSave);
       setIsEditing(false);
       toast({ title: 'Profile updated successfully!' });
+      router.push('/dashboard');
     } catch (error) {
       console.error('Profile update error:', error);
       toast({
@@ -231,7 +232,7 @@ export default function TeacherProfilePage() {
                     {isEditing ? 'Cancel' : <><Edit className="mr-2 h-4 w-4" /> Edit Profile</>}
                 </Button>
             </div>
-             {!isEditing && (
+             {isEditing && (
                 <div className="space-y-2 mt-4">
                   <div className="flex justify-between">
                     <Label>Profile Completion</Label>
@@ -445,7 +446,7 @@ export default function TeacherProfilePage() {
 
                   <CardFooter className="px-0">
                     <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-                        {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/> Saving...</> : 'Save Changes'}
+                        {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/> Saving...</> : 'Save and Continue'}
                     </Button>
                   </CardFooter>
                 </form>
@@ -516,6 +517,3 @@ export default function TeacherProfilePage() {
     </div>
   );
 }
-
-
-    

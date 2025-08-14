@@ -70,7 +70,7 @@ export default function InstitutionProfilePage() {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
-  const { register, handleSubmit, control, formState: { errors, isSubmitting }, reset } = useForm<InstitutionProfileForm>({
+  const { register, handleSubmit, control, formState: { errors, isSubmitting }, reset, getValues } = useForm<InstitutionProfileForm>({
     resolver: zodResolver(institutionProfileSchema),
     defaultValues: {
         branches: [],
@@ -118,6 +118,7 @@ export default function InstitutionProfilePage() {
       reset(profileToSave);
       setIsEditing(false);
       toast({ title: 'Profile updated successfully!' });
+      router.push('/dashboard');
     } catch (error) {
       console.error('Profile update error:', error);
       toast({
@@ -343,7 +344,7 @@ export default function InstitutionProfilePage() {
 
                 <CardFooter className="px-0">
                     <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-                        {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/> Saving...</> : 'Save Changes'}
+                        {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/> Saving...</> : 'Save and Continue'}
                     </Button>
                 </CardFooter>
               </form>
@@ -404,5 +405,3 @@ export default function InstitutionProfilePage() {
     </div>
   );
 }
-
-    

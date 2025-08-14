@@ -50,7 +50,8 @@ export const getUserProfile = async (userId: string) => {
   if (docSnap.exists()) {
     return docSnap.data();
   } else {
-    return null;
+    // Return a base object so the app knows a profile needs to be created.
+    return {};
   }
 };
 
@@ -60,15 +61,8 @@ export const setUserRole = async (userId: string, role: string) => {
   await setDoc(userRef, { role }, { merge: true });
 };
 
-export const getUserRole = async (userId: string): Promise<string | null> => {
-    const profile = await getUserProfile(userId);
-    return profile?.role || null;
-};
-
 export const onAuthStateChange = (callback: (user: User | null) => void) => {
   return onAuthStateChanged(auth, callback);
 }
 
 export { auth, db, FirebaseError };
-
-    
