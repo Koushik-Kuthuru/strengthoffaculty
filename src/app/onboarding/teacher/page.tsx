@@ -1,12 +1,13 @@
+
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { updateUserProfile } from '@/lib/firebase';
 import { Trash2, PlusCircle } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { Progress } from '@/components/ui/progress';
 
 const workHistorySchema = z.object({
   school: z.string().min(1, "School/College name is required"),
@@ -22,24 +24,24 @@ const workHistorySchema = z.object({
 });
 
 const teacherProfileSchema = z.object({
-  fullName: z.string().min(1, 'Full name is required'),
+  fullName: z.string().min(1, 'Full name is required').optional(),
   profilePhoto: z.any().optional(),
-  gender: z.string().min(1, 'Please select a gender'),
-  dob: z.string().min(1, 'Date of birth is required'),
-  contactNumber: z.string().min(10, 'Enter a valid contact number'),
-  email: z.string().email('Invalid email address'),
+  gender: z.string().min(1, 'Please select a gender').optional(),
+  dob: z.string().min(1, 'Date of birth is required').optional(),
+  contactNumber: z.string().min(10, 'Enter a valid contact number').optional(),
+  email: z.string().email('Invalid email address').optional(),
   currentLocation: z.object({
-    city: z.string().min(1, 'City is required'),
-    state: z.string().min(1, 'State is required'),
-    pinCode: z.string().length(6, 'Pin code must be 6 digits'),
+    city: z.string().min(1, 'City is required').optional(),
+    state: z.string().min(1, 'State is required').optional(),
+    pinCode: z.string().length(6, 'Pin code must be 6 digits').optional(),
   }),
   professionalDetails: z.object({
-    jobTitle: z.string().min(1, 'Job title is required'),
-    totalExperience: z.string().min(1, 'Experience is required'),
-    subjects: z.string().min(1, 'Subjects are required'),
-    qualifications: z.string().min(1, 'Qualifications are required'),
-    gradesTaught: z.string().min(1, 'Grades taught are required'),
-    curriculumExpertise: z.string().min(1, 'Curriculum expertise is required'),
+    jobTitle: z.string().min(1, 'Job title is required').optional(),
+    totalExperience: z.string().min(1, 'Experience is required').optional(),
+    subjects: z.string().min(1, 'Subjects are required').optional(),
+    qualifications: z.string().min(1, 'Qualifications are required').optional(),
+    gradesTaught: z.string().min(1, 'Grades taught is required').optional(),
+    curriculumExpertise: z.string().min(1, 'Curriculum expertise is required').optional(),
   }),
   workHistory: z.array(workHistorySchema).optional(),
   achievements: z.string().optional(),
@@ -61,15 +63,51 @@ const teacherProfileSchema = z.object({
 
 type TeacherProfileForm = z.infer<typeof teacherProfileSchema>;
 
+const getTotalFields = (data: any): [number, number] => {
+    let totalFields = 0;
+    let filledFields = 0;
+
+    const checkField = (value: any) => {
+        totalFields++;
+        if (value !== undefined && value !== null && value !== '' && (!Array.isArray(value) || value.length > 0)) {
+            if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
+                if (Object.keys(value).length > 0) {
+                     const [subTotal, subFilled] = getTotalFields(value);
+                     totalFields += subTotal -1;
+                     filledFields += subFilled;
+                }
+            } else {
+                filledFields++;
+            }
+        }
+    };
+    
+    Object.values(data).forEach(checkField);
+
+    // a little hacky, but need to adjust for the nested objects
+    return [totalFields - 6, filledFields];
+};
+
+
 export default function CompleteTeacherProfilePage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { register, handleSubmit, control, formState: { errors, isSubmitting } } = useForm<TeacherProfileForm>({
+  const { register, handleSubmit, control, formState: { errors, isSubmitting }, getValues } = useForm<TeacherProfileForm>({
     resolver: zodResolver(teacherProfileSchema),
     defaultValues: {
-      workHistory: [{ school: '', duration: '' }],
+      workHistory: [],
     }
   });
+  
+  const [progress, setProgress] = useState(0);
+  const formValues = useWatch({ control });
+
+  useEffect(() => {
+    const [total, filled] = getTotalFields(getValues());
+    const newProgress = total > 0 ? (filled / total) * 100 : 0;
+    setProgress(newProgress);
+  }, [formValues, getValues]);
+
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -110,6 +148,13 @@ export default function CompleteTeacherProfilePage() {
             <CardDescription>Provide the following details to get matched with the right opportunities.</CardDescription>
           </CardHeader>
           <CardContent>
+            <div className="space-y-2 mb-8">
+              <div className="flex justify-between">
+                <Label>Profile Completion</Label>
+                <span className="text-sm font-medium">{Math.round(progress)}%</span>
+              </div>
+              <Progress value={progress} />
+            </div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
               
               {/* Basic Information */}
@@ -320,3 +365,4 @@ export default function CompleteTeacherProfilePage() {
     </div>
   );
 }
+
