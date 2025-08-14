@@ -63,14 +63,6 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   )
 }
 
-function MicrosoftIcon() {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M11.5,11.5H3v-8h8.5V11.5z M21,3v8.5h-8.5V3H21z M11.5,21h-8v-8h8.5V21z M21,13h-8.5v8H21V13z"/>
-        </svg>
-    )
-}
-
 const PasswordStrength = ({ value, label }: { value: number, label: string }) => {
   const strengthColor = useMemo(() => {
     if (value < 33) return 'bg-red-500';
@@ -519,9 +511,6 @@ export default function Home() {
                  <Button size="lg" className="justify-center p-6 rounded-full text-base bg-blue-600 hover:bg-blue-700 text-white" onClick={handleGoogleSignIn}>
                     <GoogleIcon className="mr-4 h-6 w-6"/> Continue with Google
                 </Button>
-                <Button size="lg" variant="outline" className="justify-center p-6 rounded-full text-base">
-                   <MicrosoftIcon className="mr-4 h-6 w-6" /> Continue with Microsoft
-                </Button>
                  <Button size="lg" variant="outline" className="justify-center p-6 rounded-full text-base" onClick={handleShowLogin}>
                    Sign in with email
                 </Button>
@@ -718,5 +707,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
