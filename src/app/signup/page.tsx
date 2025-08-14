@@ -1,8 +1,9 @@
+
 "use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,8 @@ import { Logo } from "@/components/logo";
 import { signInWithGoogle, signUpWithEmailPassword } from "@/lib/firebase";
 import { FirebaseError } from "firebase/app";
 import { useToast } from "@/hooks/use-toast";
+import { Progress } from "@/components/ui/progress";
+import { CheckCircle, XCircle } from "lucide-react";
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -24,6 +27,29 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   )
 }
 
+const PasswordStrength = ({ value, label }: { value: number, label: string }) => {
+  const strengthColor = useMemo(() => {
+    if (value < 33) return 'bg-red-500';
+    if (value < 66) return 'bg-yellow-500';
+    return 'bg-green-500';
+  }, [value]);
+
+  return (
+    <div>
+      <Progress value={value} className="h-2" indicatorClassName={strengthColor} />
+      <p className="text-sm mt-1">{label}</p>
+    </div>
+  );
+};
+
+const Requirement = ({ met, text }: { met: boolean; text: string }) => (
+  <div className={`flex items-center text-sm ${met ? 'text-green-600' : 'text-muted-foreground'}`}>
+    {met ? <CheckCircle className="mr-2 h-4 w-4" /> : <XCircle className="mr-2 h-4 w-4" />}
+    {text}
+  </div>
+);
+
+
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
@@ -32,6 +58,25 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+
+  const passwordRequirements = useMemo(() => {
+    const hasLength = password.length >= 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*]/.test(password);
+
+    const metCount = [hasLength, hasUpper, hasLower, hasNumber, hasSpecial].filter(Boolean).length;
+    const strength = (metCount / 5) * 100;
+    
+    let strengthLabel = "Weak";
+    if (strength > 33 && strength < 100) strengthLabel = "Medium";
+    if (strength === 100) strengthLabel = "Strong";
+    if (password.length === 0) strengthLabel = "";
+
+    return { strength, strengthLabel, hasLength, hasUpper, hasLower, hasNumber, hasSpecial };
+  }, [password]);
+
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +88,15 @@ export default function SignupPage() {
       });
       return;
     }
+    if (passwordRequirements.strength < 100) {
+       toast({
+        variant: "destructive",
+        title: "Weak Password",
+        description: "Please ensure all password requirements are met."
+      });
+      return;
+    }
+
     try {
       await signUpWithEmailPassword(email, password);
       // We can also update the user's profile with the full name here if needed
@@ -50,11 +104,15 @@ export default function SignupPage() {
     } catch (error) {
       console.error("Error signing up with email: ", error);
        if (error instanceof FirebaseError) {
-         toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: error.message,
-        });
+          let description = error.message;
+          if (error.code === 'auth/email-already-in-use') {
+            description = "This email is already registered. Please sign in or use a different email.";
+          }
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: description,
+          });
       }
     }
   };
@@ -119,6 +177,18 @@ export default function SignupPage() {
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
+               {password.length > 0 && (
+                <div className="space-y-2">
+                  <PasswordStrength value={passwordRequirements.strength} label={passwordRequirements.strengthLabel} />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
+                    <Requirement met={passwordRequirements.hasLength} text="At least 8 characters" />
+                    <Requirement met={passwordRequirements.hasUpper} text="One uppercase letter" />
+                    <Requirement met={passwordRequirements.hasLower} text="One lowercase letter" />
+                    <Requirement met={passwordRequirements.hasNumber} text="One number" />
+                    <Requirement met={passwordRequirements.hasSpecial} text="One special character" />
+                  </div>
+                </div>
+              )}
                <div className="grid gap-2">
                 <Label htmlFor="confirm-password">Confirm Password</Label>
                 <Input id="confirm-password" type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
@@ -143,3 +213,5 @@ export default function SignupPage() {
     </div>
   )
 }
+
+    
