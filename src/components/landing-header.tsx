@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -8,7 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { Menu, Briefcase, Users, Rss, Moon, Sun } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 
-export function LandingHeader() {
+export function LandingHeader({ onLoginClick, onSignupClick }: { onLoginClick: () => void, onSignupClick: () => void }) {
   const { setTheme } = useTheme()
 
   const navLinks = [
@@ -36,11 +37,11 @@ export function LandingHeader() {
               ))}
           </nav>
           <div className="hidden items-center gap-2 md:flex ml-6">
-            <Button variant="ghost" asChild>
-              <Link href="/signup" className="text-lg">Join now</Link>
+            <Button variant="ghost" onClick={onSignupClick} className="text-lg">
+              Join now
             </Button>
-            <Button variant="outline" asChild>
-              <Link href="/login" className="text-lg px-6 py-3 rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">Sign In</Link>
+            <Button variant="outline" onClick={onLoginClick} className="text-lg px-6 py-3 rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+              Sign In
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -82,11 +83,11 @@ export function LandingHeader() {
                   ))}
                   </nav>
                   <div className="mt-4 flex flex-col gap-2">
-                     <Button variant="ghost" asChild>
-                      <Link href="/login">Sign In</Link>
+                     <Button variant="ghost" onClick={onLoginClick}>
+                      Sign In
                     </Button>
-                    <Button asChild>
-                      <Link href="/signup">Join Now</Link>
+                    <Button onClick={onSignupClick}>
+                      Join Now
                     </Button>
                      <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -118,3 +119,5 @@ export function LandingHeader() {
     </header>
   );
 }
+
+    

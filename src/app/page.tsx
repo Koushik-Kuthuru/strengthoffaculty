@@ -1,3 +1,6 @@
+
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -11,6 +14,18 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ChevronRight } from "lucide-react";
+import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Logo } from "@/components/logo";
+import { signInWithGoogle, signUpWithEmailPassword, signInWithEmailPassword } from "@/lib/firebase";
+import { FirebaseError } from "firebase/app";
+import { useToast } from "@/hooks/use-toast";
+import { Progress } from "@/components/ui/progress";
+import { CheckCircle, XCircle, Eye, EyeOff } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 
 const SubjectButton = ({ subject }: { subject: string }) => (
@@ -56,10 +71,361 @@ function MicrosoftIcon() {
     )
 }
 
+const PasswordStrength = ({ value, label }: { value: number, label: string }) => {
+  const strengthColor = useMemo(() => {
+    if (value < 33) return 'bg-red-500';
+    if (value < 66) return 'bg-yellow-500';
+    return 'bg-green-500';
+  }, [value]);
+
+  return (
+    <div>
+      <Progress value={value} className="h-2" indicatorClassName={strengthColor} />
+      <p className="text-sm mt-1">{label}</p>
+    </div>
+  );
+};
+
+const Requirement = ({ met, text }: { met: boolean; text: string }) => (
+  <div className={`flex items-center text-sm ${met ? 'text-green-600' : 'text-muted-foreground'}`}>
+    {met ? <CheckCircle className="mr-2 h-4 w-4" /> : <XCircle className="mr-2 h-4 w-4" />}
+    {text}
+  </div>
+);
+
+
+const LoginForm = ({ onSignupClick, onModalClose }: { onSignupClick: () => void, onModalClose: () => void }) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleEmailSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await signInWithEmailPassword(email, password);
+      router.push('/dashboard');
+      onModalClose();
+    } catch (error) {
+       console.error("Error signing in with email: ", error);
+       if (error instanceof FirebaseError) {
+         toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error.message,
+        });
+      }
+    }
+  }
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      router.push('/dashboard');
+      onModalClose();
+    } catch (error) {
+      if (error instanceof FirebaseError && (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request')) {
+        console.log("Sign-in popup closed by user.");
+        return;
+      }
+      console.error("Error signing in with Google: ", error);
+       if (error instanceof FirebaseError) {
+         toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error.message,
+        });
+      }
+    }
+  };
+
+  return (
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle className="text-2xl font-headline text-center">Welcome Back</DialogTitle>
+        <DialogDescription className="text-center">
+          Sign in to continue to your Strength of Faculty account.
+        </DialogDescription>
+      </DialogHeader>
+      <div className="px-6 pb-6">
+        <form className="grid gap-4" onSubmit={handleEmailSignIn}>
+            <div className="grid gap-2">
+            <Label htmlFor="email-login">Email</Label>
+            <Input id="email-login" type="email" placeholder="name@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>
+            <div className="grid gap-2">
+            <div className="flex items-center">
+                <Label htmlFor="password-login">Password</Label>
+                <Link href="#" className="ml-auto inline-block text-sm underline">
+                Forgot your password?
+                </Link>
+            </div>
+             <div className="relative">
+                <Input id="password-login" type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-1 top-1/2 h-full -translate-y-1/2 px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 transition-all duration-300" />
+                  ) : (
+                    <Eye className="h-4 w-4 transition-all duration-300" />
+                  )}
+                   <span className="sr-only">
+                    {showPassword ? "Hide password" : "Show password"}
+                  </span>
+                </Button>
+              </div>
+            </div>
+            <Button type="submit" className="w-full">
+            Sign In
+            </Button>
+            <Button variant="outline" className="w-full" type="button" onClick={handleGoogleSignIn}>
+              <GoogleIcon className="mr-2 h-4 w-4" />
+              Sign in with Google
+            </Button>
+        </form>
+        <div className="mt-4 text-center text-sm">
+            Don&apos;t have an account?{" "}
+            <Button variant="link" className="p-0 h-auto underline" onClick={onSignupClick}>
+              Sign up
+            </Button>
+        </div>
+      </div>
+    </DialogContent>
+  );
+};
+
+
+const SignupForm = ({ onLoginClick, onModalClose }: { onLoginClick: () => void, onModalClose: () => void }) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const passwordRequirements = useMemo(() => {
+    const hasLength = password.length >= 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*]/.test(password);
+
+    const metCount = [hasLength, hasUpper, hasLower, hasNumber, hasSpecial].filter(Boolean).length;
+    const strength = (metCount / 5) * 100;
+    
+    let strengthLabel = "Weak";
+    if (strength > 33 && strength < 100) strengthLabel = "Medium";
+    if (strength === 100) strengthLabel = "Strong";
+    if (password.length === 0) strengthLabel = "";
+
+    return { strength, strengthLabel, hasLength, hasUpper, hasLower, hasNumber, hasSpecial };
+  }, [password]);
+
+
+  const handleEmailSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Passwords do not match.",
+        description: "Please ensure your passwords match before proceeding."
+      });
+      return;
+    }
+    if (passwordRequirements.strength < 100) {
+       toast({
+        variant: "destructive",
+        title: "Weak Password",
+        description: "Please ensure all password requirements are met."
+      });
+      return;
+    }
+
+    try {
+      await signUpWithEmailPassword(email, password);
+      // We can also update the user's profile with the full name here if needed
+      router.push('/dashboard');
+      onModalClose();
+    } catch (error) {
+      console.error("Error signing up with email: ", error);
+       if (error instanceof FirebaseError) {
+          let description = error.message;
+          if (error.code === 'auth/email-already-in-use') {
+            description = "This email is already registered. Please sign in or use a different email.";
+          }
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: description,
+          });
+      }
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    try {
+      await signInWithGoogle();
+      router.push('/dashboard');
+      onModalClose();
+    } catch (error) {
+      if (error instanceof FirebaseError && (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request')) {
+        console.log("Sign-up popup closed by user.");
+        return;
+      }
+      console.error("Error signing up with Google: ", error);
+       if (error instanceof FirebaseError) {
+         toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error.message,
+        });
+      }
+    }
+  };
+  
+  return (
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle className="text-2xl font-headline text-center">Create an Account</DialogTitle>
+        <DialogDescription className="text-center">
+          Join our network of educators and institutions today.
+        </DialogDescription>
+      </DialogHeader>
+      <div className="px-6 pb-6 max-h-[80vh] overflow-y-auto">
+        <form className="grid gap-4" onSubmit={handleEmailSignUp}>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="first-name">First Name</Label>
+              <Input id="first-name" placeholder="John" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="last-name">Last Name</Label>
+              <Input id="last-name" placeholder="Doe" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
+            </div>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="email-signup">Email</Label>
+            <Input
+              id="email-signup"
+              type="email"
+              placeholder="name@example.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="password-signup">Password</Label>
+            <div className="relative">
+              <Input id="password-signup" type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 top-1/2 h-full -translate-y-1/2 px-3 py-2 hover:bg-transparent"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4 transition-all duration-300" />
+                ) : (
+                  <Eye className="h-4 w-4 transition-all duration-300" />
+                )}
+                <span className="sr-only">
+                  {showPassword ? "Hide password" : "Show password"}
+                </span>
+              </Button>
+            </div>
+          </div>
+           {password.length > 0 && (
+            <div className="space-y-2">
+              <PasswordStrength value={passwordRequirements.strength} label={passwordRequirements.strengthLabel} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
+                <Requirement met={passwordRequirements.hasLength} text="At least 8 characters" />
+                <Requirement met={passwordRequirements.hasUpper} text="One uppercase letter" />
+                <Requirement met={passwordRequirements.hasLower} text="One lowercase letter" />
+                <Requirement met={passwordRequirements.hasNumber} text="One number" />
+                <Requirement met={passwordRequirements.hasSpecial} text="One special character" />
+              </div>
+            </div>
+          )}
+           <div className="grid gap-2">
+            <Label htmlFor="confirm-password">Confirm Password</Label>
+            <div className="relative">
+              <Input id="confirm-password" type={showConfirmPassword ? "text" : "password"} required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+               <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 top-1/2 h-full -translate-y-1/2 px-3 py-2 hover:bg-transparent"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="h-4 w-4 transition-all duration-300" />
+                ) : (
+                  <Eye className="h-4 w-4 transition-all duration-300" />
+                )}
+                 <span className="sr-only">
+                  {showConfirmPassword ? "Hide password" : "Show password"}
+                </span>
+              </Button>
+            </div>
+          </div>
+          <Button type="submit" className="w-full">
+            Create Account
+          </Button>
+          <Button variant="outline" className="w-full" type="button" onClick={handleGoogleSignUp}>
+             <GoogleIcon className="mr-2 h-4 w-4" />
+            Sign up with Google
+          </Button>
+        </form>
+        <div className="mt-4 text-center text-sm">
+          Already have an account?{" "}
+          <Button variant="link" className="p-0 h-auto underline" onClick={onLoginClick}>
+            Sign in
+          </Button>
+        </div>
+      </div>
+    </DialogContent>
+  );
+};
+
+
 export default function Home() {
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+  const router = useRouter();
+
+  const handleShowLogin = () => {
+    setShowSignup(false);
+    setShowLogin(true);
+  };
+
+  const handleShowSignup = () => {
+    setShowLogin(false);
+    setShowSignup(true);
+  };
+  
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      router.push('/dashboard');
+    } catch (error) {
+      console.error("Error signing in with Google: ", error);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <LandingHeader />
+      <LandingHeader onLoginClick={handleShowLogin} onSignupClick={handleShowSignup} />
       <main className="flex-1">
         <section className="py-12 md:py-24">
           <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -70,13 +436,13 @@ export default function Home() {
               </h1>
               <p className="text-muted-foreground text-lg">Connect. Collaborate. Empower Education.</p>
               <div className="flex flex-col gap-3 max-w-md">
-                 <Button size="lg" className="justify-center p-6 rounded-full text-base bg-blue-600 hover:bg-blue-700 text-white">
+                 <Button size="lg" className="justify-center p-6 rounded-full text-base bg-blue-600 hover:bg-blue-700 text-white" onClick={handleGoogleSignIn}>
                     <GoogleIcon className="mr-4 h-6 w-6"/> Continue with Google
                 </Button>
                 <Button size="lg" variant="outline" className="justify-center p-6 rounded-full text-base">
                    <MicrosoftIcon className="mr-4 h-6 w-6" /> Continue with Microsoft
                 </Button>
-                 <Button size="lg" variant="outline" className="justify-center p-6 rounded-full text-base">
+                 <Button size="lg" variant="outline" className="justify-center p-6 rounded-full text-base" onClick={handleShowLogin}>
                    Sign in with email
                 </Button>
               </div>
@@ -84,7 +450,7 @@ export default function Home() {
                 By continuing, you agree to SoF’s <Link href="#" className="underline">User Terms</Link>, <Link href="#" className="underline">Privacy Policy</Link>, and <Link href="#" className="underline">Code of Conduct</Link>.
               </p>
                <p className="mt-4">
-                New to SoF? <Link href="/signup" className="text-primary font-bold hover:underline">Join now</Link>
+                New to SoF? <Button variant="link" className="text-primary font-bold hover:underline p-0" onClick={handleShowSignup}>Join now</Button>
               </p>
             </div>
 
@@ -207,7 +573,7 @@ export default function Home() {
                     <p className="text-muted-foreground mb-6">
                         With the Open to Teach feature, educators can show availability for full-time, part-time, online classes, or mentoring.
                     </p>
-                    <Button>Get Started</Button>
+                    <Button onClick={handleShowSignup}>Get Started</Button>
                 </div>
             </div>
         </section>
@@ -253,12 +619,21 @@ export default function Home() {
                 />
             </div>
             <h2 className="text-4xl md:text-5xl font-thin mb-6">Join your colleagues and friends on Strength of Faculty.</h2>
-            <Button size="lg" className="rounded-full px-12 py-6 text-xl">Get Started</Button>
+            <Button size="lg" className="rounded-full px-12 py-6 text-xl" onClick={handleShowSignup}>Get Started</Button>
           </div>
         </section>
-
       </main>
+
+      <Dialog open={showLogin} onOpenChange={setShowLogin}>
+        <LoginForm onSignupClick={handleShowSignup} onModalClose={() => setShowLogin(false)} />
+      </Dialog>
+      <Dialog open={showSignup} onOpenChange={setShowSignup}>
+        <SignupForm onLoginClick={handleShowLogin} onModalClose={() => setShowSignup(false)} />
+      </Dialog>
+      
       <LandingFooter />
     </div>
   );
 }
+
+    
