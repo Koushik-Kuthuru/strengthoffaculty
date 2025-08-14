@@ -20,7 +20,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/logo";
-import { signInWithGoogle, signUpWithEmailPassword, signInWithEmailPassword } from "@/lib/firebase";
+import { signInWithGoogle, signUpWithEmailPassword, signInWithEmailPassword, sendPasswordReset } from "@/lib/firebase";
 import { FirebaseError } from "firebase/app";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
@@ -94,7 +94,7 @@ const Requirement = ({ met, text }: { met: boolean; text: string }) => (
 );
 
 
-const LoginForm = ({ onSignupClick, onModalClose }: { onSignupClick: () => void, onModalClose: () => void }) => {
+const LoginForm = ({ onSignupClick, onForgotPasswordClick, onModalClose }: { onSignupClick: () => void, onForgotPasswordClick: () => void, onModalClose: () => void }) => {
   const router = useRouter();
   const { toast } = useToast();
   const [email, setEmail] = useState('');
@@ -157,9 +157,9 @@ const LoginForm = ({ onSignupClick, onModalClose }: { onSignupClick: () => void,
             <div className="grid gap-2">
             <div className="flex items-center">
                 <Label htmlFor="password-login">Password</Label>
-                <Link href="#" className="ml-auto inline-block text-sm underline">
-                Forgot your password?
-                </Link>
+                <Button variant="link" type="button" className="ml-auto p-0 h-auto text-sm underline" onClick={onForgotPasswordClick}>
+                  Forgot your password?
+                </Button>
             </div>
              <div className="relative">
                 <Input id="password-login" type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} />
@@ -302,13 +302,15 @@ const SignupForm = ({ onLoginClick, onModalClose }: { onLoginClick: () => void, 
       </DialogHeader>
       <div className="px-6 pb-6 max-h-[80vh] overflow-y-auto">
         <form className="grid gap-4" onSubmit={handleEmailSignUp}>
-          <div className="grid gap-2">
-            <Label htmlFor="first-name">First Name</Label>
-            <Input id="first-name" placeholder="John" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="last-name">Last Name</Label>
-            <Input id="last-name" placeholder="Doe" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="first-name">First Name</Label>
+              <Input id="first-name" placeholder="John" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="last-name">Last Name</Label>
+              <Input id="last-name" placeholder="Doe" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
+            </div>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="email-signup">Email</Label>
@@ -397,21 +399,89 @@ const SignupForm = ({ onLoginClick, onModalClose }: { onLoginClick: () => void, 
 };
 
 
+const ForgotPasswordForm = ({ onLoginClick, onModalClose }: { onLoginClick: () => void, onModalClose: () => void }) => {
+  const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await sendPasswordReset(email);
+      toast({
+        title: "Password Reset Email Sent",
+        description: "Please check your inbox for a link to reset your password.",
+      });
+      onModalClose();
+    } catch (error) {
+      console.error("Error sending password reset email: ", error);
+      if (error instanceof FirebaseError) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error.message,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle className="text-2xl font-headline text-center">Forgot Password</DialogTitle>
+        <DialogDescription className="text-center">
+          Enter your email to receive a password reset link.
+        </DialogDescription>
+      </DialogHeader>
+      <div className="px-6 pb-6">
+        <form className="grid gap-4" onSubmit={handlePasswordReset}>
+          <div className="grid gap-2">
+            <Label htmlFor="email-forgot">Email</Label>
+            <Input id="email-forgot" type="email" placeholder="name@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? 'Sending...' : 'Send Reset Link'}
+          </Button>
+        </form>
+        <div className="mt-4 text-center text-sm">
+          Remember your password?{" "}
+          <Button variant="link" className="p-0 h-auto underline" onClick={onLoginClick}>
+            Sign in
+          </Button>
+        </div>
+      </div>
+    </DialogContent>
+  );
+};
+
+
 export default function Home() {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const router = useRouter();
 
   const handleShowLogin = () => {
     setShowSignup(false);
+    setShowForgotPassword(false);
     setShowLogin(true);
   };
 
   const handleShowSignup = () => {
     setShowLogin(false);
+    setShowForgotPassword(false);
     setShowSignup(true);
   };
   
+  const handleShowForgotPassword = () => {
+    setShowLogin(false);
+    setShowSignup(false);
+    setShowForgotPassword(true);
+  }
+
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
@@ -623,10 +693,13 @@ export default function Home() {
       </main>
 
       <Dialog open={showLogin} onOpenChange={setShowLogin}>
-        <LoginForm onSignupClick={handleShowSignup} onModalClose={() => setShowLogin(false)} />
+        <LoginForm onSignupClick={handleShowSignup} onForgotPasswordClick={handleShowForgotPassword} onModalClose={() => setShowLogin(false)} />
       </Dialog>
       <Dialog open={showSignup} onOpenChange={setShowSignup}>
         <SignupForm onLoginClick={handleShowLogin} onModalClose={() => setShowSignup(false)} />
+      </Dialog>
+      <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
+        <ForgotPasswordForm onLoginClick={handleShowLogin} onModalClose={() => setShowForgotPassword(false)} />
       </Dialog>
       
       <LandingFooter />
