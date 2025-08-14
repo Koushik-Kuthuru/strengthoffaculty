@@ -463,6 +463,7 @@ export default function Home() {
   const [showSignup, setShowSignup] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleShowLogin = () => {
     setShowSignup(false);
@@ -487,7 +488,18 @@ export default function Home() {
       await signInWithGoogle();
       router.push('/dashboard');
     } catch (error) {
+      if (error instanceof FirebaseError && (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request')) {
+        console.log("Google sign-in popup closed by user.");
+        return;
+      }
       console.error("Error signing in with Google: ", error);
+      if (error instanceof FirebaseError) {
+        toast({
+         variant: "destructive",
+         title: "Uh oh! Something went wrong.",
+         description: error.message,
+       });
+     }
     }
   };
 
