@@ -63,6 +63,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   // A simple way to toggle role for now
   const isInstitution = true; 
+  const profileUrl = isInstitution ? '/onboarding/institution' : '/onboarding/teacher';
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -128,7 +129,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                                     </div>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem>Profile</DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                  <Link href={profileUrl}>Profile</Link>
+                                </DropdownMenuItem>
                                 <DropdownMenuItem>Settings</DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={handleSignOut}>Logout</DropdownMenuItem>
@@ -176,7 +179,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>My Account</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>Profile</DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link href={profileUrl}>Profile</Link>
+                            </DropdownMenuItem>
                             <DropdownMenuItem>Settings</DropdownMenuItem>
                              <DropdownMenuSub>
                                 <DropdownMenuSubTrigger>
