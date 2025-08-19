@@ -51,8 +51,9 @@ export const getUserProfile = async (userId: string) => {
   if (docSnap.exists()) {
     return docSnap.data();
   } else {
-    // If the profile doesn't exist, create a basic one with the teacher role.
-    const basicProfile = { role: 'teacher', profileCompleted: false };
+    // If the profile doesn't exist, create a basic one.
+    // Explicitly set profileCompleted to false for new users.
+    const basicProfile = { profileCompleted: false };
     await setDoc(userRef, basicProfile);
     return basicProfile;
   }
