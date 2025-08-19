@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { onAuthStateChange, getUserProfile } from '@/lib/firebase';
+import { onAuthStateChange, getUserProfile, auth } from '@/lib/firebase';
 import { User } from 'firebase/auth';
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { TeacherDashboard } from "@/components/teacher-dashboard";
