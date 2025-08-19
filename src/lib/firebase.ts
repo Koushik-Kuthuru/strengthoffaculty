@@ -2,7 +2,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, FirebaseError } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, User } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, enableNetwork, disableNetwork } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -46,21 +46,30 @@ export const updateUserProfile = async (userId: string, data: any) => {
 export const getUserProfile = async (userId: string) => {
   if (!userId) return null;
   const userRef = doc(db, "users", userId);
-  const docSnap = await getDoc(userRef);
-  if (docSnap.exists()) {
-    return docSnap.data();
-  } else {
-    // If the profile doesn't exist, create a basic one.
-    // Explicitly set profileCompleted to false for new users.
-    const basicProfile = { profileCompleted: false, role: null };
-    await setDoc(userRef, basicProfile);
-    return basicProfile;
+  try {
+    const docSnap = await getDoc(userRef);
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      // If the profile doesn't exist, create a basic one.
+      const basicProfile = { profileCompleted: false, role: null };
+      await setDoc(userRef, basicProfile);
+      return basicProfile;
+    }
+  } catch (error) {
+     console.error("Error getting user profile:", error);
+     throw error;
   }
 };
 
 export const setUserRole = async (userId: string, role: 'teacher' | 'institution') => {
   if (!userId) throw new Error("User ID is required to set role.");
   const userRef = doc(db, "users", userId);
+  // Ensure a basic profile exists before setting the role
+  const docSnap = await getDoc(userRef);
+  if (!docSnap.exists()) {
+    await setDoc(userRef, { profileCompleted: false, role: null });
+  }
   await updateDoc(userRef, { role });
 };
 
