@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { auth, getUserProfile } from '@/lib/firebase';
 import { useTheme } from "next-themes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -16,14 +16,17 @@ import { Logo } from './logo';
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { setTheme } = useTheme()
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+        const userProfile = await getUserProfile(currentUser.uid);
+        setProfile(userProfile);
       } else {
         router.push("/login");
       }
@@ -60,7 +63,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  const profileUrl = '/onboarding/teacher/profile';
+  const profileUrl = profile?.role === 'teacher' ? '/onboarding/teacher/profile' : '/onboarding/institution/profile';
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -121,7 +124,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                                         </Avatar>
                                         <div>
                                             <p className="font-semibold">{user.displayName}</p>
-                                            <p className="text-xs text-muted-foreground font-normal">Teacher</p>
+                                            <p className="text-xs text-muted-foreground font-normal capitalize">{profile?.role}</p>
                                         </div>
                                     </div>
                                 </DropdownMenuLabel>

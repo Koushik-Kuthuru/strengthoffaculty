@@ -7,25 +7,33 @@ import { onAuthStateChange, getUserProfile } from '@/lib/firebase';
 import { User } from 'firebase/auth';
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { TeacherDashboard } from "@/components/teacher-dashboard";
+import { InstitutionDashboard } from "@/components/institution-dashboard";
 import { Skeleton } from '@/components/ui/skeleton';
 import { Logo } from '@/components/logo';
-
 
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChange(async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        const profile = await getUserProfile(currentUser.uid);
-        
-        if (profile && !profile.profileCompleted) {
+        const userProfile = await getUserProfile(currentUser.uid);
+        setProfile(userProfile);
+
+        if (!userProfile?.role) {
+          router.push('/onboarding/role');
+        } else if (!userProfile?.profileCompleted) {
+          if (userProfile.role === 'teacher') {
             router.push('/onboarding/teacher/profile');
+          } else if (userProfile.role === 'institution') {
+            router.push('/onboarding/institution/profile');
+          }
         } else {
-            setLoading(false);
+          setLoading(false);
         }
       } else {
         router.push('/login');
@@ -49,7 +57,8 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <TeacherDashboard />
+      {profile?.role === 'teacher' && <TeacherDashboard />}
+      {profile?.role === 'institution' && <InstitutionDashboard />}
     </DashboardLayout>
   );
 }

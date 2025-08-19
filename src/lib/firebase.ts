@@ -1,3 +1,4 @@
+
 // Import the functions you need from the SDKs you need
 import { initializeApp, FirebaseError } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, User } from "firebase/auth";
@@ -39,9 +40,7 @@ export const sendPasswordReset = (email: string) => {
 export const updateUserProfile = async (userId: string, data: any) => {
   if (!userId) throw new Error("User ID is required to update profile.");
   const userRef = doc(db, "users", userId);
-  // Ensure the role is always set to teacher when the profile is updated.
-  const profileData = { ...data, role: 'teacher' };
-  await setDoc(userRef, profileData, { merge: true });
+  await setDoc(userRef, data, { merge: true });
 };
 
 export const getUserProfile = async (userId: string) => {
@@ -53,11 +52,18 @@ export const getUserProfile = async (userId: string) => {
   } else {
     // If the profile doesn't exist, create a basic one.
     // Explicitly set profileCompleted to false for new users.
-    const basicProfile = { profileCompleted: false };
+    const basicProfile = { profileCompleted: false, role: null };
     await setDoc(userRef, basicProfile);
     return basicProfile;
   }
 };
+
+export const setUserRole = async (userId: string, role: 'teacher' | 'institution') => {
+  if (!userId) throw new Error("User ID is required to set role.");
+  const userRef = doc(db, "users", userId);
+  await updateDoc(userRef, { role });
+};
+
 
 export const onAuthStateChange = (callback: (user: User | null) => void) => {
   return onAuthStateChanged(auth, callback);
