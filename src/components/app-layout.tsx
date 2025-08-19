@@ -33,9 +33,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             router.push('/onboarding/teacher/profile');
           }
         } catch (error) {
-          if (error instanceof FirebaseError && error.code === 'unavailable') {
-            // Silently handle offline mode in the layout, page-level components will show a message.
-          } else {
+          // Silently handle offline mode in the layout.
+          // Page-level components are responsible for showing user-facing error messages.
+          if (!(error instanceof FirebaseError && error.code === 'unavailable')) {
              console.error("Error fetching user profile for layout:", error);
           }
         }
@@ -215,7 +215,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </div>
         </header>
         <main className="container py-8">
-            {children}
+            {loading ? null : children}
         </main>
          <footer className="md:hidden bg-card border-t">
             <nav className="flex justify-around py-2">

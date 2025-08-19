@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Logo } from "@/components/logo";
-import { Loader2, AlertTriangle } from "lucide-react";
+import { Loader2, AlertTriangle, WifiOff } from "lucide-react";
 
 export default function TeacherProfilePage() {
   const router = useRouter();
@@ -22,6 +22,7 @@ export default function TeacherProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     headline: "",
@@ -77,7 +78,7 @@ export default function TeacherProfilePage() {
     e.preventDefault();
     if (!user) return;
     setSaving(true);
-    setError(null);
+    setFormError(null);
 
     try {
       const profileData = {
@@ -94,7 +95,7 @@ export default function TeacherProfilePage() {
     } catch (err) {
        console.error("Failed to save profile", err);
         if (err instanceof FirebaseError && err.code === 'unavailable') {
-            setError("You are offline. Cannot save your profile. Please check your connection and retry.");
+            setFormError("You are offline. Please check your connection and try again.");
         } else {
             toast({
                 variant: "destructive",
@@ -115,15 +116,15 @@ export default function TeacherProfilePage() {
     );
   }
   
-   if (error && !loading && !saving) {
+   if (error) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-background p-4">
         <Card className="w-full max-w-md text-center">
           <CardHeader>
             <CardTitle className="flex justify-center">
-                <AlertTriangle className="h-10 w-10 text-destructive" />
+                <WifiOff className="h-10 w-10 text-destructive" />
             </CardTitle>
-            <CardDescription className="text-lg font-semibold">
+            <CardDescription className="text-lg font-semibold mt-4">
               Connection Error
             </CardDescription>
           </CardHeader>
@@ -170,10 +171,10 @@ export default function TeacherProfilePage() {
                 <Label htmlFor="location">Location</Label>
                 <Input id="location" placeholder="E.g., 'Hyderabad, India'" value={formData.location} onChange={handleInputChange}/>
               </div>
-               {error && saving && (
-                <div className="flex items-center gap-2 text-sm text-destructive">
+               {formError && (
+                <div className="flex items-center gap-2 text-sm text-destructive rounded-md bg-destructive/10 p-3">
                   <AlertTriangle className="h-4 w-4" />
-                  <span>{error}</span>
+                  <span>{formError}</span>
                 </div>
               )}
               <Button type="submit" className="w-full" disabled={saving}>

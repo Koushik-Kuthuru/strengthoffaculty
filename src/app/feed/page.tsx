@@ -9,7 +9,7 @@ import { auth, getUserProfile } from "@/lib/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Rss, Video, Image as ImageIcon, FileText, Bookmark, Users, AlertTriangle } from "lucide-react";
+import { Rss, Video, Image as ImageIcon, FileText, Bookmark, Users, AlertTriangle, WifiOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -130,58 +130,63 @@ function FeedPageContent() {
 
       {/* Center Column */}
       <div className="md:col-span-6 lg:col-span-6 space-y-6">
-        {error && (
+        {error ? (
              <Card className="bg-destructive/10 border-destructive/50 text-destructive-foreground">
                 <CardContent className="p-4">
-                    <div className="flex items-center gap-4">
-                        <AlertTriangle className="h-6 w-6" />
+                    <div className="flex flex-col items-center text-center gap-4">
+                        <WifiOff className="h-10 w-10 text-destructive" />
                         <div>
-                            <CardTitle className="text-base">Connection Error</CardTitle>
-                            <CardDescription className="text-destructive-foreground/80">{error}</CardDescription>
+                            <CardTitle className="text-lg">Connection Error</CardTitle>
+                            <CardDescription className="text-destructive-foreground/80 mt-2">
+                                {error}
+                            </CardDescription>
                         </div>
-                        <Button variant="ghost" onClick={() => user && fetchUserData(user)}>Retry</Button>
+                        <Button variant="destructive" onClick={() => user && fetchUserData(user)}>Retry</Button>
                     </div>
                 </CardContent>
             </Card>
+        ) : (
+          <>
+            <Card>
+                <CardContent className="p-4">
+                    <div className="flex items-center gap-4">
+                        <Avatar>
+                            <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || 'User'} />
+                            <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
+                        </Avatar>
+                        <Button variant="outline" className="flex-1 justify-start rounded-full text-muted-foreground">Start a post</Button>
+                    </div>
+                    <div className="flex justify-around mt-4">
+                        <Button variant="ghost" size="sm"><Video className="text-blue-500" /> Video</Button>
+                        <Button variant="ghost" size="sm"><ImageIcon className="text-green-500"/> Photo</Button>
+                        <Button variant="ghost" size="sm"><FileText className="text-yellow-500"/> Article</Button>
+                    </div>
+                </CardContent>
+            </Card>
+            <div className="flex items-center gap-2">
+                <Separator className="flex-1"/>
+                <span className="text-xs text-muted-foreground">Sort by: Top</span>
+            </div>
+            <Card>
+                <CardHeader>
+                    <div className="flex items-start gap-4">
+                      <Avatar>
+                         <AvatarImage src="https://placehold.co/40x40.png" alt="User avatar" data-ai-hint="person face" />
+                        <AvatarFallback>HG</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                         <p className="font-semibold">Hardik Gothwal</p>
+                         <p className="text-xs text-muted-foreground">Full Stack & AI-Focused Software Engineer | 2d ago</p>
+                      </div>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-sm mb-4">I just built a fun project where I recreated the famous "invisible cloak" illusion in real-time using computer vision. How it works: ...more</p>
+                    <img src="https://placehold.co/600x400.png" alt="Project post" className="rounded-lg" data-ai-hint="person holding cloth"/>
+                </CardContent>
+            </Card>
+        </>
         )}
-        <Card>
-            <CardContent className="p-4">
-                <div className="flex items-center gap-4">
-                    <Avatar>
-                        <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || 'User'} />
-                        <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
-                    </Avatar>
-                    <Button variant="outline" className="flex-1 justify-start rounded-full text-muted-foreground">Start a post</Button>
-                </div>
-                <div className="flex justify-around mt-4">
-                    <Button variant="ghost" size="sm"><Video className="text-blue-500" /> Video</Button>
-                    <Button variant="ghost" size="sm"><ImageIcon className="text-green-500"/> Photo</Button>
-                    <Button variant="ghost" size="sm"><FileText className="text-yellow-500"/> Article</Button>
-                </div>
-            </CardContent>
-        </Card>
-        <div className="flex items-center gap-2">
-            <Separator className="flex-1"/>
-            <span className="text-xs text-muted-foreground">Sort by: Top</span>
-        </div>
-        <Card>
-            <CardHeader>
-                <div className="flex items-start gap-4">
-                  <Avatar>
-                     <AvatarImage src="https://placehold.co/40x40.png" alt="User avatar" data-ai-hint="person face" />
-                    <AvatarFallback>HG</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                     <p className="font-semibold">Hardik Gothwal</p>
-                     <p className="text-xs text-muted-foreground">Full Stack & AI-Focused Software Engineer | 2d ago</p>
-                  </div>
-                </div>
-            </CardHeader>
-            <CardContent>
-                <p className="text-sm mb-4">I just built a fun project where I recreated the famous "invisible cloak" illusion in real-time using computer vision. How it works: ...more</p>
-                <img src="https://placehold.co/600x400.png" alt="Project post" className="rounded-lg" data-ai-hint="person holding cloth"/>
-            </CardContent>
-        </Card>
       </div>
 
       {/* Right Column */}
