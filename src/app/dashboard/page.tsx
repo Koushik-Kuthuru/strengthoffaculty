@@ -20,32 +20,33 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const checkUserProfile = async (currentUser: User | null) => {
+  const checkUser = async (currentUser: User | null) => {
     if (!currentUser) {
       router.push('/login');
       return;
     }
+    
+    setLoading(true);
+    setError(null);
 
     try {
-      setError(null);
-      setLoading(true);
       setUser(currentUser);
       const userProfile = await getUserProfile(currentUser.uid);
       setProfile(userProfile);
-      setLoading(false);
     } catch (e: any) {
-       if (e.code === 'unavailable') {
-           setError("You are offline. Please check your connection and try again.");
-       } else {
-           setError("An unexpected error occurred. Please try again.");
-       }
-       setLoading(false);
+      if (e.code === 'unavailable') {
+        setError("You are offline. Please check your connection and try again.");
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
+    } finally {
+        setLoading(false);
     }
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChange(async (currentUser) => {
-      await checkUserProfile(currentUser);
+      await checkUser(currentUser);
     });
 
     return () => unsubscribe();
@@ -70,7 +71,7 @@ export default function DashboardPage() {
             <WifiOff className="h-16 w-16 text-destructive" />
             <h1 className="text-xl font-semibold">Connection Error</h1>
             <p className="text-muted-foreground max-w-xs">{error}</p>
-            <Button onClick={() => checkUserProfile(auth.currentUser)}>Retry</Button>
+            <Button onClick={() => checkUser(auth.currentUser)}>Retry</Button>
         </div>
       </div>
      )

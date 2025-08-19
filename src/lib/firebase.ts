@@ -52,7 +52,7 @@ export const getUserProfile = async (userId: string) => {
       return docSnap.data();
     } else {
       // If the profile doesn't exist, create a basic one.
-      const basicProfile = { profileCompleted: false, role: null };
+      const basicProfile = { role: null };
       await setDoc(userRef, basicProfile);
       return basicProfile;
     }
@@ -68,7 +68,7 @@ export const setUserRole = async (userId: string, role: 'teacher' | 'institution
   // Ensure a basic profile exists before setting the role
   const docSnap = await getDoc(userRef);
   if (!docSnap.exists()) {
-    await setDoc(userRef, { profileCompleted: false, role: null });
+    await setDoc(userRef, { role: null });
   }
   await updateDoc(userRef, { role });
 };
