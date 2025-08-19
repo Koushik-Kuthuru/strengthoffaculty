@@ -34,8 +34,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           }
         } catch (error) {
           if (error instanceof FirebaseError && error.code === 'unavailable') {
-            console.error("Offline: Could not fetch user profile for layout.");
-            // We can set an error state here to show a banner if needed
+            // Silently handle offline mode in the layout, page-level components will show a message.
           } else {
              console.error("Error fetching user profile for layout:", error);
           }
