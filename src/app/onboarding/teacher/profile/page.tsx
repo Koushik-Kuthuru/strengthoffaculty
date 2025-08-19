@@ -3,7 +3,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { User, onAuthStateChanged, FirebaseError } from "firebase/auth";
+import { User, onAuthStateChanged } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
 import { auth, getUserProfile, updateUserProfile } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

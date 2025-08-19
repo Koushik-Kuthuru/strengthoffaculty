@@ -4,7 +4,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { User, onAuthStateChanged, FirebaseError } from 'firebase/auth';
+import { User, onAuthStateChanged } from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
 import { auth, getUserProfile } from '@/lib/firebase';
 import { useTheme } from "next-themes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

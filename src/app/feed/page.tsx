@@ -2,7 +2,8 @@
 "use client";
 
 import { AppLayout } from "@/components/app-layout";
-import { User, onAuthStateChanged, FirebaseError } from "firebase/auth";
+import { User, onAuthStateChanged } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
 import { useEffect, useState } from "react";
 import { auth, getUserProfile } from "@/lib/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
