@@ -14,11 +14,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { updateUserProfile, getUserProfile, auth } from '@/lib/firebase';
-import { Trash2, PlusCircle, Building, MapPin, Info, FileText, Link as LinkIcon, User as UserIcon, Loader2, Edit } from 'lucide-react';
+import { Trash2, PlusCircle, Building, MapPin, Info, FileText, Link as LinkIcon, User as UserIcon, Loader2, Edit, WifiOff } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Logo } from '@/components/logo';
 
 const branchSchema = z.object({
   address: z.string().min(1, "Address is required"),
@@ -106,6 +107,8 @@ export default function InstitutionProfilePage() {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+
 
   const { register, handleSubmit, control, formState: { errors, isSubmitting }, getValues, reset, watch } = useForm<InstitutionProfileForm>({
     resolver: zodResolver(institutionProfileSchema),
@@ -134,6 +137,35 @@ export default function InstitutionProfilePage() {
   
   const formValues = watch();
 
+  const fetchProfile = async (currentUser: User) => {
+    try {
+      setError(null);
+      setLoading(true);
+      setUser(currentUser);
+      const existingProfile = await getUserProfile(currentUser.uid);
+      if (existingProfile) {
+        const typedProfile = existingProfile as InstitutionProfileForm;
+        if (typedProfile.profileCompleted) {
+            setProfileData(typedProfile);
+            reset(typedProfile);
+        } else {
+            setIsEditing(true);
+        }
+      } else {
+          setIsEditing(true);
+      }
+    } catch(e: any) {
+         if (e.code === 'unavailable') {
+            setError("You are offline. Please check your connection and try again.");
+        } else {
+            setError("An unexpected error occurred while fetching your profile.");
+        }
+    } finally {
+        setLoading(false);
+    }
+  };
+
+
   useEffect(() => {
     const [total, filled] = getTotalFields(formValues);
     const newProgress = total > 0 ? (filled / total) * 100 : 0;
@@ -144,19 +176,10 @@ export default function InstitutionProfilePage() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        setUser(currentUser);
-        const existingProfile = await getUserProfile(currentUser.uid);
-        if (existingProfile && existingProfile.profileCompleted) {
-          const typedProfile = existingProfile as InstitutionProfileForm;
-          setProfileData(typedProfile);
-          reset(typedProfile);
-        } else {
-          setIsEditing(true);
-        }
+        await fetchProfile(currentUser);
       } else {
         router.push('/login');
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -193,23 +216,30 @@ export default function InstitutionProfilePage() {
     }
   };
   
-    if (loading) {
+  if (loading) {
     return (
-        <div className="min-h-screen bg-muted/20 py-12">
-            <div className="container mx-auto max-w-4xl">
-                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                       <Skeleton className="h-8 w-1/2" />
-                       <Skeleton className="h-10 w-24" />
-                    </CardHeader>
-                    <CardContent className="space-y-8">
-                       <Skeleton className="h-96 w-full" />
-                    </CardContent>
-                 </Card>
+        <div className="flex h-screen w-screen items-center justify-center bg-background">
+            <div className="flex flex-col items-center gap-4">
+                <Logo />
+                <Skeleton className="h-4 w-48" />
             </div>
         </div>
     )
   }
+  
+   if (error) {
+     return (
+       <div className="flex h-screen w-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4 text-center">
+            <WifiOff className="h-16 w-16 text-destructive" />
+            <h1 className="text-xl font-semibold">Connection Error</h1>
+            <p className="text-muted-foreground max-w-xs">{error}</p>
+            <Button onClick={() => auth.currentUser && fetchProfile(auth.currentUser)}>Retry</Button>
+        </div>
+      </div>
+     )
+  }
+
 
   return (
     <div className="min-h-screen bg-muted/20 py-12">
@@ -491,3 +521,5 @@ export default function InstitutionProfilePage() {
     </div>
   );
 }
+
+    
