@@ -35,7 +35,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       await signInWithEmailPassword(email, password);
-      router.push('/dashboard');
+      router.push('/feed');
     } catch (error) {
        console.error("Error signing in with email: ", error);
        if (error instanceof FirebaseError) {
@@ -51,7 +51,7 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
-      router.push('/dashboard');
+      router.push('/feed');
     } catch (error) {
       if (error instanceof FirebaseError && (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request')) {
         console.log("Sign-in popup closed by user.");

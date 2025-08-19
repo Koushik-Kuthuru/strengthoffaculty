@@ -102,7 +102,7 @@ export default function SignupPage() {
     try {
       await signUpWithEmailPassword(email, password);
       // We can also update the user's profile with the full name here if needed
-      router.push('/dashboard');
+      router.push('/feed');
     } catch (error) {
       console.error("Error signing up with email: ", error);
        if (error instanceof FirebaseError) {
@@ -122,7 +122,7 @@ export default function SignupPage() {
   const handleGoogleSignUp = async () => {
     try {
       await signInWithGoogle();
-      router.push('/dashboard');
+      router.push('/feed');
     } catch (error) {
       if (error instanceof FirebaseError && (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request')) {
         console.log("Sign-up popup closed by user.");

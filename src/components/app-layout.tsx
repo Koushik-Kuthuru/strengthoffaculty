@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Home, Briefcase, MessageSquare, Bell, Search, Users, Moon, Sun } from 'lucide-react';
 import { Logo } from './logo';
 
-export function DashboardLayout({ children }: { children: React.ReactNode }) {
+export function AppLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -63,14 +63,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  const profileUrl = profile?.role === 'teacher' ? '/onboarding/teacher/profile' : '/onboarding/institution/profile';
+  const profileUrl = '/onboarding/teacher/profile';
 
   return (
     <div className="min-h-screen bg-muted/30">
         <header className="w-full border-b bg-card">
             <div className="container flex h-16 items-center">
                 <div className="mr-4 flex items-center">
-                    <Link href="/dashboard" className="mr-2">
+                    <Link href="/feed" className="mr-2">
                         <Logo />
                     </Link>
                     <div className="relative">
@@ -85,7 +85,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
                 <nav className="flex-1 justify-center hidden md:flex">
                     <div className="flex items-center space-x-6 lg:space-x-8">
-                        <Link href="/dashboard" className="flex flex-col items-center text-sm font-medium transition-colors hover:text-primary">
+                        <Link href="/feed" className="flex flex-col items-center text-sm font-medium transition-colors hover:text-primary">
                             <Home className="h-6 w-6" />
                             <span>Home</span>
                         </Link>
@@ -207,7 +207,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </main>
          <footer className="md:hidden bg-card border-t">
             <nav className="flex justify-around py-2">
-                 <Link href="/dashboard" className="flex flex-col items-center text-sm font-medium transition-colors hover:text-primary">
+                 <Link href="/feed" className="flex flex-col items-center text-sm font-medium transition-colors hover:text-primary">
                     <Home className="h-6 w-6" />
                 </Link>
                 <Link href="#" className="flex flex-col items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary">

@@ -89,7 +89,7 @@ const LoginForm = ({ onSignupClick, onForgotPasswordClick, onModalClose }: { onS
     e.preventDefault();
     try {
       await signInWithEmailPassword(email, password);
-      router.push('/dashboard');
+      router.push('/feed');
       onModalClose();
     } catch (error) {
        console.error("Error signing in with email: ", error);
@@ -110,7 +110,7 @@ const LoginForm = ({ onSignupClick, onForgotPasswordClick, onModalClose }: { onS
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
-      router.push('/dashboard');
+      router.push('/feed');
       onModalClose();
     } catch (error) {
       if (error instanceof FirebaseError && (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request')) {
@@ -241,7 +241,7 @@ const SignupForm = ({ onLoginClick, onModalClose }: { onLoginClick: () => void, 
     try {
       await signUpWithEmailPassword(email, password);
       // We can also update the user's profile with the full name here if needed
-      router.push('/dashboard');
+      router.push('/feed');
       onModalClose();
     } catch (error) {
       console.error("Error signing up with email: ", error);
@@ -262,7 +262,7 @@ const SignupForm = ({ onLoginClick, onModalClose }: { onLoginClick: () => void, 
   const handleGoogleSignUp = async () => {
     try {
       await signInWithGoogle();
-      router.push('/dashboard');
+      router.push('/feed');
       onModalClose();
     } catch (error) {
       if (error instanceof FirebaseError && (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request')) {
@@ -474,7 +474,7 @@ export default function Home() {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
-      router.push('/dashboard');
+      router.push('/feed');
     } catch (error) {
       if (error instanceof FirebaseError && (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request')) {
         console.log("Google sign-in popup closed by user.");
@@ -504,7 +504,7 @@ export default function Home() {
               </h1>
               <p className="text-muted-foreground text-lg">Connect. Collaborate. Empower Education.</p>
               <div className="flex flex-col gap-3 max-w-md">
-                 <Button size="lg" className="justify-center p-6 rounded-full text-base bg-blue-600 hover:bg-blue-700 text-white" onClick={handleGoogleSignIn}>
+                 <Button size="lg" className="justify-center p-6 rounded-full text-base" onClick={handleGoogleSignIn}>
                     <GoogleIcon className="mr-4 h-6 w-6"/> Continue with Google
                 </Button>
                  <Button size="lg" variant="outline" className="justify-center p-6 rounded-full text-base" onClick={handleShowLogin}>
