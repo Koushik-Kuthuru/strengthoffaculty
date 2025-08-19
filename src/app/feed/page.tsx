@@ -9,7 +9,7 @@ import { auth, getUserProfile } from "@/lib/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Rss, Video, Image as ImageIcon, FileText, Bookmark, Users, AlertTriangle, WifiOff } from "lucide-react";
+import { Rss, Video, Image as ImageIcon, FileText, Bookmark, Users, WifiOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
