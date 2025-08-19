@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { User, onAuthStateChanged } from 'firebase/auth';
+import { User, onAuthStateChanged, FirebaseError } from 'firebase/auth';
 import { auth, getUserProfile } from '@/lib/firebase';
 import { useTheme } from "next-themes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,8 +25,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        const userProfile = await getUserProfile(currentUser.uid);
-        setProfile(userProfile);
+        try {
+          const userProfile = await getUserProfile(currentUser.uid);
+          setProfile(userProfile);
+          if (!userProfile?.profileCompleted) {
+            router.push('/onboarding/teacher/profile');
+          }
+        } catch (error) {
+          if (error instanceof FirebaseError && error.code === 'unavailable') {
+            console.error("Offline: Could not fetch user profile for layout.");
+            // We can set an error state here to show a banner if needed
+          } else {
+             console.error("Error fetching user profile for layout:", error);
+          }
+        }
       } else {
         router.push("/login");
       }

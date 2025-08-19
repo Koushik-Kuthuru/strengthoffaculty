@@ -2,22 +2,47 @@
 "use client";
 
 import { AppLayout } from "@/components/app-layout";
-import { User, onAuthStateChanged } from "firebase/auth";
+import { User, onAuthStateChanged, FirebaseError } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { auth } from "@/lib/firebase";
+import { auth, getUserProfile } from "@/lib/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Rss, Video, Image as ImageIcon, FileText, Bookmark, Users } from "lucide-react";
+import { Rss, Video, Image as ImageIcon, FileText, Bookmark, Users, AlertTriangle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function FeedPageContent() {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchUserData = async (currentUser: User) => {
+    setUser(currentUser);
+    setError(null);
+    setLoading(true);
+    try {
+      const userProfile = await getUserProfile(currentUser.uid);
+      setProfile(userProfile);
+    } catch (err) {
+      if (err instanceof FirebaseError && err.code === 'unavailable') {
+        setError("You are offline. Some information may be unavailable. Please check your connection.");
+      } else {
+        setError("An error occurred while fetching your profile.");
+        console.error(err);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        setUser(currentUser);
+        fetchUserData(currentUser);
+      } else {
+        setLoading(false);
       }
     });
     return () => unsubscribe();
@@ -32,42 +57,66 @@ function FeedPageContent() {
     return names[0]?.[0]?.toUpperCase() || '';
   }
 
+  const ProfileCardSkeleton = () => (
+    <Card>
+        <div className="h-16 bg-muted"></div>
+        <CardHeader className="flex flex-col items-center text-center -mt-12">
+            <Skeleton className="h-24 w-24 rounded-full" />
+            <Skeleton className="h-6 w-32 mt-2" />
+            <Skeleton className="h-4 w-48 mt-1" />
+        </CardHeader>
+        <Separator />
+        <CardContent className="py-4 space-y-3">
+             <div className="flex justify-between">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-8" />
+            </div>
+             <div className="flex justify-between">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-4 w-8" />
+            </div>
+        </CardContent>
+    </Card>
+  );
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
       {/* Left Column */}
       <div className="md:col-span-3 lg:col-span-3 space-y-6">
-        <Card className="overflow-hidden">
-            <div className="h-16 bg-muted"></div>
-            <CardHeader className="flex flex-col items-center text-center -mt-12">
-                 <Avatar className="h-24 w-24 text-3xl border-4 border-card">
-                    <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || 'User'} />
-                    <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
-                </Avatar>
-                <CardTitle className="text-xl mt-2">{user?.displayName}</CardTitle>
-                <CardDescription className="text-sm">Student at St. Martin's Engineering College, Hyderabad</CardDescription>
-            </CardHeader>
-            <Separator />
-            <CardContent className="text-sm py-4 space-y-2">
-                <div className="flex justify-between">
-                    <p className="text-muted-foreground">Profile viewers</p>
-                    <p className="font-semibold text-primary">94</p>
-                </div>
-                 <div className="flex justify-between">
-                    <p className="text-muted-foreground">Post impressions</p>
-                    <p className="font-semibold text-primary">83</p>
-                </div>
-            </CardContent>
-            <Separator />
-            <CardContent className="py-4">
-                <p className="text-xs text-muted-foreground">Access exclusive tools & insights</p>
-                <Button variant="link" className="p-0 h-auto text-sm">Try Premium for free</Button>
-            </CardContent>
-            <Separator/>
-            <CardContent className="py-4 flex items-center gap-2">
-                <Bookmark className="h-4 w-4 text-muted-foreground"/>
-                <p className="text-sm font-semibold">My items</p>
-            </CardContent>
-        </Card>
+        {loading ? <ProfileCardSkeleton /> : user && (
+            <Card className="overflow-hidden">
+                <div className="h-16 bg-muted"></div>
+                <CardHeader className="flex flex-col items-center text-center -mt-12">
+                    <Avatar className="h-24 w-24 text-3xl border-4 border-card">
+                        <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+                        <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+                    </Avatar>
+                    <CardTitle className="text-xl mt-2">{user.displayName}</CardTitle>
+                    <CardDescription className="text-sm px-2">{profile?.headline || 'Eager to contribute to the future of education.'}</CardDescription>
+                </CardHeader>
+                <Separator />
+                <CardContent className="text-sm py-4 space-y-2">
+                    <div className="flex justify-between">
+                        <p className="text-muted-foreground">Profile viewers</p>
+                        <p className="font-semibold text-primary">94</p>
+                    </div>
+                    <div className="flex justify-between">
+                        <p className="text-muted-foreground">Post impressions</p>
+                        <p className="font-semibold text-primary">83</p>
+                    </div>
+                </CardContent>
+                <Separator />
+                <CardContent className="py-4">
+                    <p className="text-xs text-muted-foreground">Access exclusive tools & insights</p>
+                    <Button variant="link" className="p-0 h-auto text-sm">Try Premium for free</Button>
+                </CardContent>
+                <Separator/>
+                <CardContent className="py-4 flex items-center gap-2">
+                    <Bookmark className="h-4 w-4 text-muted-foreground"/>
+                    <p className="text-sm font-semibold">My items</p>
+                </CardContent>
+            </Card>
+        )}
         <Card>
             <CardHeader><CardTitle className="text-base">Recent</CardTitle></CardHeader>
              <CardContent className="space-y-2 text-sm text-muted-foreground">
@@ -80,6 +129,18 @@ function FeedPageContent() {
 
       {/* Center Column */}
       <div className="md:col-span-6 lg:col-span-6 space-y-6">
+        {error && (
+             <Card className="bg-destructive/10 border-destructive/50 text-destructive-foreground p-4">
+                <div className="flex items-center gap-4">
+                    <AlertTriangle className="h-6 w-6" />
+                    <div>
+                        <CardTitle className="text-base">Connection Error</CardTitle>
+                        <CardDescription className="text-destructive-foreground/80">{error}</CardDescription>
+                    </div>
+                    <Button variant="ghost" onClick={() => user && fetchUserData(user)}>Retry</Button>
+                </div>
+            </Card>
+        )}
         <Card>
             <CardContent className="p-4">
                 <div className="flex items-center gap-4">
