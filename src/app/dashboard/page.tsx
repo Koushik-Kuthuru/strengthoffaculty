@@ -32,18 +32,7 @@ export default function DashboardPage() {
       setUser(currentUser);
       const userProfile = await getUserProfile(currentUser.uid);
       setProfile(userProfile);
-
-      if (!userProfile?.role) {
-        router.push('/onboarding/role');
-      } else if (!userProfile?.profileCompleted) {
-        if (userProfile.role === 'teacher') {
-          router.push('/onboarding/teacher/profile');
-        } else if (userProfile.role === 'institution') {
-          router.push('/onboarding/institution/profile');
-        }
-      } else {
-        setLoading(false);
-      }
+      setLoading(false);
     } catch (e: any) {
        if (e.code === 'unavailable') {
            setError("You are offline. Please check your connection and try again.");
@@ -91,6 +80,8 @@ export default function DashboardPage() {
     <DashboardLayout>
       {profile?.role === 'teacher' && <TeacherDashboard />}
       {profile?.role === 'institution' && <InstitutionDashboard />}
+      {!profile?.role && <TeacherDashboard />}
     </DashboardLayout>
   );
 }
+
