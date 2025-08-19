@@ -131,15 +131,17 @@ function FeedPageContent() {
       {/* Center Column */}
       <div className="md:col-span-6 lg:col-span-6 space-y-6">
         {error && (
-             <Card className="bg-destructive/10 border-destructive/50 text-destructive-foreground p-4">
-                <div className="flex items-center gap-4">
-                    <AlertTriangle className="h-6 w-6" />
-                    <div>
-                        <CardTitle className="text-base">Connection Error</CardTitle>
-                        <CardDescription className="text-destructive-foreground/80">{error}</CardDescription>
+             <Card className="bg-destructive/10 border-destructive/50 text-destructive-foreground">
+                <CardContent className="p-4">
+                    <div className="flex items-center gap-4">
+                        <AlertTriangle className="h-6 w-6" />
+                        <div>
+                            <CardTitle className="text-base">Connection Error</CardTitle>
+                            <CardDescription className="text-destructive-foreground/80">{error}</CardDescription>
+                        </div>
+                        <Button variant="ghost" onClick={() => user && fetchUserData(user)}>Retry</Button>
                     </div>
-                    <Button variant="ghost" onClick={() => user && fetchUserData(user)}>Retry</Button>
-                </div>
+                </CardContent>
             </Card>
         )}
         <Card>

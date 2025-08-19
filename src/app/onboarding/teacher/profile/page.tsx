@@ -115,7 +115,7 @@ export default function TeacherProfilePage() {
     );
   }
   
-   if (error && !loading) {
+   if (error && !loading && !saving) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-background p-4">
         <Card className="w-full max-w-md text-center">
@@ -170,6 +170,12 @@ export default function TeacherProfilePage() {
                 <Label htmlFor="location">Location</Label>
                 <Input id="location" placeholder="E.g., 'Hyderabad, India'" value={formData.location} onChange={handleInputChange}/>
               </div>
+               {error && saving && (
+                <div className="flex items-center gap-2 text-sm text-destructive">
+                  <AlertTriangle className="h-4 w-4" />
+                  <span>{error}</span>
+                </div>
+              )}
               <Button type="submit" className="w-full" disabled={saving}>
                 {saving ? <><Loader2 className="animate-spin mr-2" /> Saving...</> : 'Save and Continue'}
               </Button>
